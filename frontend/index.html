@@ -8,15 +8,23 @@
 <body>
     <header>
         <h1>LocalSmart</h1>
-        <p>Sistema de gestión interna de Retail</p>
+        <p id="mensaje-rol"></p>
     </header>
 <main>
-    <section id="seccion-alertas">
-        <h2>Alertas de Stock</h2>
-        <section id= "lista-alertas">
+<section id="resumen">
+    <section class= "card">Productos: 156</section>
+    <section class= "card">Stock crítico: 3</section>
+    <section class= "card">Tareas: 5</section>
+</section>
 
-        </section>
-    </section>
+<section id= "seccion-alertas">
+    <h2>Alertas de Stock</h2>
+    <section id="lista-alertas"></section>
+</section>
+<section id= "seccion-productos">
+    <h2>Gestión de Productos</h2>
+    <button onclick= "window.location.href= 'productos.html'">Ir a Productos</button>
+</section>
 </main>
 
 <script src= "app.js"></script>

@@ -31,3 +31,22 @@ main {
     padding: 10px;
     margin-bottom: 10px;
 }
+#resumen{
+    display: flex;
+    gap: 10px;
+    margin: 15px;
+}
+.card {
+    background: #e3f2fd;
+    padding: 15px;
+    border-radius: 8px;
+    flex: 1;
+    text-align: center;
+    font-weight: bold;
+}
+.alerta {
+    background: #fff3cd;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 6px;
+}
