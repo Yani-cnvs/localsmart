@@ -2,12 +2,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function ir(pagina){
     window.location.href =pagina;
 }
-//CERRAR SESIÓN
+//CERRAR SESIÓN no funciona
 function cerrarSesion(){
     localStorage.removeItem('rol');
     window.location.href = 'login.html';
 }
-
 
 const rol = localStorage.getItem('rol');
     if(rol === 'vendedor') {
