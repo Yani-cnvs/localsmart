@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Incentivos - LocalSmart</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>Incentivos
+    <button onclick="cerrarSesion()">Cerrar Sesión </button>
+    </header>
+    <main>
+        <section>
+            <h3>Mis puntos</h3>
+            <p id="puntos">0 puntos</p>
+        </section>
+        <section>
+            <h2>Beneficios Disponibles</h2>
+            <section id="lista-incentivos"></section>
+        </section>
+        <section>
+            <h3>Solicitar canje de beneficio</h3>
+            <form id="form-incentivo">
+                <input type="text" id="nombre-beneficio" placeholder="Nombre de beneficio" required>
+                <button type="submit">Solicitar</button>
+            </form>
+        </section>
+    </main>
+
+    <script src="incentivos.js"></script>
+</body>
+</html>
