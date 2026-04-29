@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tareas - LocalSmart</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h2>Tareas</h2>
+        <button onclick="cerrarSesion()">Cerrar Sesión</button>
+    </header>
+    <main>
+        <section>
+            <h3>Nueva tarea</h3>
+            <form id="form-tarea">
+                <input type="text" id="titulo" placeholder="Título" required>
+                <input type="text" id="descripcion" placeholder="Descripción" required>
+                <input type="date" id="fecha" required>
+                <label>Asignar usuario(os):</label>
+                <select id="usuarios" multiple required></select>
+                <button type="submit">Crear tarea</button>
+            </form>
+        </section>
+    </main>
+
+    <script src="tareas.js"></script>
+</body>
+</html>
