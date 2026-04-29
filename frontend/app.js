@@ -1,13 +1,20 @@
+document.addEventListener('DOMContentLoaded', () => {
+    function ir(pagina){
+    window.location.href =pagina;
+}
+//CERRAR SESIÓN
+function cerrarSesion(){
+    localStorage.removeItem('rol');
+    window.location.href = 'login.html';
+}
+
+
 const rol = localStorage.getItem('rol');
-const mensajeRol = document.getElementById('mensaje-rol');
-if(mensajeRol) {
-    if(rol === 'jefe') {
-        mensajeRol.textContent ='Bienvenido Jefe de Tienda!';
-    } else if (rol === 'vendedor'){
-        mensajeRol.textContent = 'Bienvenido Vendedor/a!';
-    } else {
-        mensajeRol.textContent = 'Error al ingresar, usuario desconocido';
-    }
+    if(rol === 'vendedor') {
+        const btnUsuarios = document.getElementById('btn-usuarios');
+        const btnReportes = document.getElementById('btn-reportes');
+        if(btnUsuarios) btnUsuarios.style.display = 'none';
+        if(btnReportes) btnReportes.style.display = 'none';
 }
 
 fetch('http://localhost:3000/alertas-stock')
@@ -29,4 +36,5 @@ fetch('http://localhost:3000/alertas-stock')
 })
 .catch(error =>{
     console.error('Error al conseguir alertas:', error);
+});
 });

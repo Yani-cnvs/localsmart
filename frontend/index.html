@@ -7,6 +7,7 @@
 </head>
 <body>
     <header>
+        <button onclick="cerrarSesion()">Cerrar sesión</button>
         <h1>LocalSmart</h1>
         <p id="mensaje-rol"></p>
     </header>
@@ -26,6 +27,14 @@
     <button onclick= "window.location.href= 'productos.html'">Ir a Productos</button>
 </section>
 </main>
+<nav id="menu">
+    <button onclick="ir('index.html')">Dashboard</button>
+    <button onclick="ir('productos.html')">Productos</button>
+    <button onclick="ir('tareas.html')">Tareas</button>
+    <button onclick="ir('incentivos.html')">Incentivos</button>
+    <button id="btn-usuarios" onclick="ir('usuarios.html')">Usuarios</button>
+    <button id="btn-reportes" onclick="ir('reportes.html')">Reportes</button>
+</nav>
 
 <script src= "app.js"></script>
 </body>
