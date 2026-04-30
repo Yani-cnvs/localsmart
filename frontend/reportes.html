@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reportes - LocalSmarte</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
         <h2>Reportes del Sistema</h2>
+        <button onclick ="window.location.href= 'index.html'">Volver</button>
         <button onclick="cerrarSesion()">Cerrar Sesión</button>
     </header>
     <main>
-        <section>
+        <section class="cards">
             <h3>Reportar problema</h3>
             <form id="form-reporte">
                 <textarea id="descripcion" placeholder="Describe el problema" required></textarea>
@@ -27,7 +28,7 @@
     </main>
 
 
-
+<script src="reportes.js"></script>
 <script src="reportes.js"></script>
 </body>
 </html>

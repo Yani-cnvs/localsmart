@@ -4,15 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tareas - LocalSmart</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
         <h2>Tareas</h2>
+        <button onclick ="window.location.href= 'index.html'">Volver</button>
         <button onclick="cerrarSesion()">Cerrar Sesión</button>
     </header>
     <main>
-        <section>
+        <section class="card">
             <h3>Nueva tarea</h3>
             <form id="form-tarea">
                 <input type="text" id="titulo" placeholder="Título" required>
@@ -23,12 +24,13 @@
                 <button type="submit">Crear tarea</button>
             </form>
         </section>
-        <section>
+        <section class="card">
             <h3>Listado de Tareas</h3>
             <section id="lista-tareas"></section>
         </section>
     </main>
 
+    <script src="app.js"></script>
     <script src="tareas.js"></script>
 </body>
 </html>

@@ -1,19 +1,46 @@
-document.addEventListener('DOMContentLoaded', () => {
-    function ir(pagina){
-    window.location.href =pagina;
+function ir(pagina){
+window.location.href =pagina;
 }
-//CERRAR SESIÓN no funciona
 function cerrarSesion(){
     localStorage.removeItem('rol');
     window.location.href = 'login.html';
 }
+function cerrarSesion(){
+    localStorage.removeItem('rol');
+    window.location.href = 'login.html';
+}
+document.addEventListener('DOMContentLoaded', () => {
 
 const rol = localStorage.getItem('rol');
-    if(rol === 'vendedor') {
-        const btnUsuarios = document.getElementById('btn-usuarios');
-        const btnReportes = document.getElementById('btn-reportes');
-        if(btnUsuarios) btnUsuarios.style.display = 'none';
-        if(btnReportes) btnReportes.style.display = 'none';
+const mensaje = document.getElementById('mensaje-rol');
+const panel = document.getElementById('panel-vendedor');
+if(mensaje){
+if(rol=== 'jefe') {
+    mensaje.textContent = 'Panel de administración - Jefe de Área';}
+    else if (rol=== 'vendedor'){
+        mensaje.textContent = 'Panel de trabajo - Vendedor';}
+    else {
+        mensaje.textContent = 'Usuario inexistente';
+    }
+    }
+    if(rol=== 'vendedor'){
+        ocultar('btn-usuarios');
+        ocultar('btn-reportes');
+
+        if(panel) panel.style.display = 'block'
+    } else{
+        if(panel) panel.style.display= 'none';
+    }
+ 
+    if(document.getElementById('lista-alertas')){
+    cargarAlertas();
+}
+    cargarMetricas();
+});
+
+function ocultar(id){
+    const elemento = document.getElementById(id);
+    if(elemento) elemento.style.display = 'none';
 }
 
 fetch('http://localhost:3000/alertas-stock')
@@ -36,4 +63,29 @@ fetch('http://localhost:3000/alertas-stock')
 .catch(error =>{
     console.error('Error al conseguir alertas:', error);
 });
+
+function cargarMetricas() {
+    fetch('http://localhost:3000/productos')
+    .then(res => res.json())
+    .then(data =>{
+        const el = document.getElementById('total-productos');
+        if(el) el.textContent = data.length;
+    });
+
+fetch ('http://localhost:3000/tareas-usuarios')
+.then(res => res.json())
+.then(data => {
+    const el = document.getElementById('total-tareas');
+    if(el){
+    const pendientes = data.filter(tarea => tarea.estado === 'pendiente');
+    el.textContent = pendientes.length;
+    }
 });
+    
+    fetch('http://localhost:3000/alertas-stock')
+    .then (res => res.json())
+    .then(data => {
+        const el = document.getElementById('total-alertas');
+        if(el) el.textContent= data.length;
+    })
+}

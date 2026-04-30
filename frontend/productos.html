@@ -4,16 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Productos</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header>
-        <h1>Gestión de Productos</h1>
-        <button onclick ="window.location.href= 'index.html'">Volver</button>
+        <h2>Productos</h2>
+        <button onclick ="ir('index.html')">Volver</button>
+        <button onclick="cerrarSesion()">Cerrar sesión</button>
     </header>
-    <main>
-        <section>
-            <h2>Añadir Productos</h2>
+    <main class= "contenedor">
+        <section class="card">
+            <h2>Agregar Productos</h2>
             <form id="form-producto">
                 <input type="text" id="nombre" placeholder="Nombre del producto" required>
                 <input type="number" id="precio" placeholder="Precio" required>
@@ -23,19 +24,22 @@
                 <option value="">Seleccionar categoría</option>
                 <option value="1">Hogar y Muebles</option>
                 <option value="2">Iluminación</option>
-                <option value="3">Jardín y Mascotas</option>
+                <option value="3">Electro Hogar</option>
                 <option value="4">Outdoor</option>
                 <option value="5">Jardín y Mascotas</option>
                 <option value="6">Ferretería</option>
                 </select>
                 <button type="submit">Guardar Producto</button>
 
-                <section>
+                <section class="card">
                     <h2>Listado de Productos</h2>
                     <section id="lista-productos"></section>
                 </section>
             </form>
         </section>
     </main>
+
+    <script src="app.js"></script>
+    <script src="productos.js"></script>
 </body>
 </html>
