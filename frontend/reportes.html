@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reportes - LocalSmarte</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h2>Reportes del Sistema</h2>
+        <button onclick="cerrarSesion()">Cerrar Sesión</button>
+    </header>
+    <main>
+        <section>
+            <h3>Reportar problema</h3>
+            <form id="form-reporte">
+                <textarea id="descripcion" placeholder="Describe el problema" required></textarea>
+                <button type="submit">Enviar Reporte</button>
+            </form>
+
+        </section>
+        <section>
+            <h3>Reportes enviados</h3>
+            <section id="lista-reportes"></section>
+        </section>
+    </main>
+
+
+
+<script src="reportes.js"></script>
+</body>
+</html>
