@@ -5,10 +5,7 @@ function cerrarSesion(){
     localStorage.removeItem('rol');
     window.location.href = 'login.html';
 }
-function cerrarSesion(){
-    localStorage.removeItem('rol');
-    window.location.href = 'login.html';
-}
+
 document.addEventListener('DOMContentLoaded', () => {
 
 const rol = localStorage.getItem('rol');

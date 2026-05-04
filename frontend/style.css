@@ -131,3 +131,55 @@ section {
 .menu button {
     margin: 0 5px;
 }
+
+#lista-tareas {
+    display: flex;
+    flex-direction: column;
+    gap:12px;
+    margin-top: 10px;
+}
+.tarea {
+    background: white;
+    padding: 12px;
+    border-radius: 10px;
+    border-left: 6px solid #6984a9;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+input, select {
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+}
+
+.tarea.completada {
+    border-left: 6px solid #A0D585;
+    opacity: 0.7;
+}
+
+.tarea button{
+    margin-top: 8px;
+    margin-right: 5px;
+}
+.tarea strong {
+    color: #263B6A;
+}
+.login-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.login-container button {
+    width: 220px;
+    margin: 10px 0;
+}
+#mensaje-rol {
+    color: white;
+    font-weight: bold;
+}
+.formulario {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
