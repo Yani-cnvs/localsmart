@@ -4,31 +4,57 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Incentivos - LocalSmart</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <header><h2>Beneficios e Incentivos</h2>
     <button onclick ="window.location.href= 'index.html'">Volver</button>
     <button onclick="cerrarSesion()">Cerrar Sesión </button>
     </header>
-    <main>
-        <section class="card">
+    <main class="contenedor">
+        <section id="seccion-puntos" class="card">
             <h3>Mis puntos</h3>
             <p id="puntos">0 puntos</p>
         </section>
+
         <section>
             <h2>Beneficios Disponibles</h2>
             <section id="lista-incentivos"></section>
         </section>
-        <section>
+
+        <section id="seccion-solicitud">
             <h3>Solicitar canje de beneficio</h3>
             <form id="form-incentivo">
                 <input type="text" id="nombre-beneficio" placeholder="Nombre de beneficio" required>
                 <button type="submit">Solicitar</button>
-            </form>
+                </form>
+                </section>
+
+            <section id="seccion-crud">
+                <h3>Gestión de Incentivos</h3>
+                <form id="form-crud">
+                    <input type="hidden" id="id-incentivo">
+                    <input type="text" id="crud-nombre" placeholder="Nombre" required>
+                    <input type="text" id="crud-descripcion" placeholder="Descripción" required>
+                    <input type="number" id="crud-puntos" placeholder="Puntos" required> 
+
+                    <button type="submit">Guardar</button>
+                </form>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Descripción</th>
+                            <th>Puntos</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id= "tabla-crud"></tbody>
+                </table>
         </section>
     </main>
 
+    <script src="app.js"></script>
     <script src="incentivos.js"></script>
 </body>
 </html>

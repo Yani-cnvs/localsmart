@@ -32,51 +32,30 @@ function cargarTareas(){
         const lista = document.getElementById('lista-tareas');
         if(!lista) return;
         lista.innerHTML = '';
+            if(datos.length === 0){
+            lista.innerHTML = '<p>No hay tareas pendientes</p>';
+            return;
+        }
 
-        const tareasAgrupadas = {};
-
-        datos.forEach(fila => {
-            if(!tareasAgrupadas[fila.id_tarea]){
-                tareasAgrupadas[fila.id_tarea] = {
-                    id: fila.id_tarea, titulo: fila.titulo, descripcion: fila.descripcion, fecha: fila.fecha, estado: fila.estado, usuarios: []
-                };
-            }
-
-            if(fila.usuario){
-                tareasAgrupadas[fila.id_tarea].usuarios.push(fila.usuario);
-            }
-        });
-        Object.values(tareasAgrupadas).forEach(tarea => {
-
+        datos.forEach(tarea => {
             const seccion = document.createElement('section');
             seccion.classList.add('tarjeta-tarea');
-            
-            const rol = localStorage.getItem('rol');
-            let botones = '';
+            const rol= localStorage.getItem('rol');
+            let botones= '';
 
             if(rol === 'vendedor'){
-                botones += `<button onclick="completar(${tarea.id})">Completar</button>`;
+                botones += `<button onclick="completar(${tarea.id_tarea})">Completar</button>`;
             }
             if(rol === 'jefe'){
-                botones += `<button onclick="eliminar(${tarea.id})">Eliminar</button>`;
+                botones += `<button onclick="eliminar(${tarea.id_tarea})">Eliminar</button>`;
             }
-            const titulo= tarea.titulo || 'Sin título';
-            const descripcion = tarea.descripcion || 'Sin descripción';
-            let fechaFormateada= 'sin fecha';
-            if(tarea.fecha){
-                const fecha = new Date (tarea.fecha);
-                if(!isNaN(fecha)){
-                    fechaFormateada = fecha. toLocaleDateString();
-                }
-            }
-            const usuariosUnicos = [...new Set(tarea.usuarios)];
-            
+
             seccion.innerHTML = `
                 <strong>${tarea.titulo}</strong><br>
                 ${tarea.descripcion}<br>
-                Fecha: ${new Date(tarea.fecha).toLocaleDateString()}<br>
+                Fecha: ${tarea.fecha}<br>
                 Estado: ${tarea.estado}<br>
-                Asignada a: ${tarea.usuarios.join(', ')}<br>
+                Asignada a: ${tarea.usuario || 'Sin asignar'}<br>
                 ${botones}`;
 
             lista.appendChild(seccion);
@@ -98,7 +77,7 @@ function crearTarea(e){
     ).map(op => op.value);
 
     if(seleccionados.length === 0){
-        alert('Selecciona un usuario para asignar tarea');
+        alert('Elige un usuario');
         return;
     }
     fetch('http://localhost:3000/tareas', {

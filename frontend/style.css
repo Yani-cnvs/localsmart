@@ -183,3 +183,16 @@ input, select {
     flex-direction: column;
     gap: 10px;
 }
+.card-incentivo {
+    background: #fff;
+    border-radius: 12px;
+    padding: 15px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+.btn-validar {
+    background-color: #218838;
+}
+.btn-validar:hover {
+    background-color: #A0D585;
+}
