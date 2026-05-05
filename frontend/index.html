@@ -9,6 +9,7 @@
     <header>
         <h1>LocalSmart</h1>
         <p id="mensaje-rol"></p>
+        <button onclick ="ir('index.html')">Volver</button>
         <button onclick="cerrarSesion()">Cerrar sesión</button>
     </header>
 <main class="contenedor">
@@ -52,8 +53,8 @@
     <button onclick="ir('productos.html')"><h3>Productos📦</h3></button>
     <button onclick="ir('tareas.html')"><h3>Tareas📝</h3></button>
     <button onclick="ir('incentivos.html')"><h3>Incentivos🎁</h3></button>
-    <button onclick="ir('usuarios.html')"><h3>Usuarios👤</h3></button>
-    <button onclick="ir('reportes.html')"><h3>Reportes📊</h3></button>
+    <button id="btn-usuarios" onclick="ir('usuarios.html')"><h3>Usuarios👤</h3></button>
+    <button id="btn-reportes" onclick="ir('reportes.html')"><h3>Reportes📊</h3></button>
 </nav>
 
 <section><h2>Alerta de Stock</h2></section>

@@ -196,3 +196,14 @@ input, select {
 .btn-validar:hover {
     background-color: #A0D585;
 }
+.lista-reportes {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+.lista-reportes section {
+    background:white;
+    border-radius: 12px;
+    padding: 15px;
+    border-left: 6px solid #263B6A;
+}

@@ -23,6 +23,8 @@ if(rol=== 'jefe') {
     if(rol=== 'vendedor'){
         ocultar('btn-usuarios');
         ocultar('btn-reportes');
+        ocultar('form-tarea');
+        ocultar('form-producto');
 
         if(panel) panel.style.display = 'block'
     } else{
@@ -40,6 +42,7 @@ function ocultar(id){
     if(elemento) elemento.style.display = 'none';
 }
 
+function cargarAlertas(){
 fetch('http://localhost:3000/alertas-stock')
 .then(respuesta => respuesta.json())
 .then(datos =>{
@@ -60,7 +63,7 @@ fetch('http://localhost:3000/alertas-stock')
 .catch(error =>{
     console.error('Error al conseguir alertas:', error);
 });
-
+}
 function cargarMetricas() {
     fetch('http://localhost:3000/productos')
     .then(res => res.json())
@@ -84,5 +87,5 @@ fetch ('http://localhost:3000/tareas-usuarios')
     .then(data => {
         const el = document.getElementById('total-alertas');
         if(el) el.textContent= data.length;
-    })
+    });
 }

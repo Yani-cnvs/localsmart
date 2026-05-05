@@ -4,10 +4,10 @@ document.addEventListener('DOMContentLoaded',() => {
 
     const form= document.getElementById('form-reporte');
     form.addEventListener('submit', (e)=> {
-        e.preventDefautl();
+        e.preventDefault();
         const descripcion= document.getElementById('descripcion').value;
 
-    fetch('http://localhost:3000/reporte',{
+    fetch('http://localhost:3000/reportes',{
         method: 'POST',
         headers: {
             'Content-Type' : 'application/json'},
@@ -43,11 +43,21 @@ function cargarReportes() {
             seccion.innerHTML=
             `<strong>Reporte ${reporte.id_reporte}</strong><br>
             ${reporte.descripcion}<br>
-            <em>${reporte.fecha}</em><hr>`;
+            <em>${formatearFecha(reporte.fecha)}</em><hr>`;
             lista.appendChild(seccion);
         });
     })
     .catch(error => {
         console.error('Error al cargar los reportes:', error);
     });
+    function formatearFecha(fecha) {
+        const f= new Date(fecha);
+        return f.toLocaleString('es-CL', {
+            day: '2-digit',
+            month:'2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    }
 }
