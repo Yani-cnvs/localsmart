@@ -1,15 +1,8 @@
 {
   "name": "LocalSmart",
   "short_name": "LocalSmart",
-  "start_url": "login.html",
+  "start_url": "index.html",
   "display": "standalone",
   "background_color": "#EEFABD",
-  "theme_color": "#263B6A",
-  "icons": [
-    {
-      "src": "icon.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    }
-  ]
+  "theme_color": "#263B6A"
 }

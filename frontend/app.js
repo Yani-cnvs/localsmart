@@ -3,7 +3,7 @@ window.location.href =pagina;
 }
 function cerrarSesion(){
     localStorage.removeItem('rol');
-    window.location.href = 'login.html';
+    window.location.href = 'index.html';
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -11,6 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
 const rol = localStorage.getItem('rol');
 const mensaje = document.getElementById('mensaje-rol');
 const panel = document.getElementById('panel-vendedor');
+if(rol === 'vendedor'){
+    const stads= document.querySelector('.estadisticas');
+    if(stads) stads.style.display = 'none';
+}
 if(mensaje){
 if(rol=== 'jefe') {
     mensaje.textContent = 'Panel de administración - Jefe de Área';}
@@ -35,6 +39,10 @@ if(rol=== 'jefe') {
     cargarAlertas();
 }
     cargarMetricas();
+
+    if(document.getElementById('lista-sugerencias')){
+    cargarSugerencias();
+    }
 });
 
 function ocultar(id){
@@ -89,6 +97,61 @@ fetch ('http://localhost:3000/tareas-usuarios')
         if(el) el.textContent= data.length;
     });
 }
+function irAAlertas() {
+    const seccion = document.getElementById('lista-alertas');
+    if(seccion){
+        seccion.scrollIntoView({ behavior:'smooth'});
+        const alertas = seccion.querySelectorAll('.alerta');
+        seccion.classList.add('resaltar');
+
+        setTimeOut(()=> {
+            alertas.forEach(a => a.classList.remove('resaltar'));
+        }, 2000);
+        }
+    }
+function cargarSugerencias() {
+    const lista= document.getElementById('lista-sugerencias');
+    if(!lista) return;
+    lista.innerHTML;
+    fetch('http://localhost:3000/alertas-stock')
+    .then (res=> res.json())
+    .then (productos=> {
+        productos.forEach(p => {
+            const s = document.createElement('section');
+            s.classList.add('sugerencia');
+            s.innerHTML = `
+            Reponer producto: <strong>${p.producto}</strong><br>
+            Stock actual: ${p.stock}`;
+            lista.appendChild(s);
+        });
+    });
+
+    fetch ('http://localhost:3000/tareas-usuarios')
+    .then(res => res.json())
+    .then(tareas => {
+        const pendientes= tareas.filter(t => t.estado === 'pendiente');
+        if(pendientes.length === 0) {
+            const s = document.createElement('section');
+            s.classList.add('sugerencia');
+            s.textContent = 'No hay tareas pendientes. Buen trabajo equipo!';
+            lista.appendChild(s);
+        }
+    });
+
+    Promise.all([
+        fetch('http://localhost:3000/alertas-stock').then (r => r.json()),
+        fetch('http://localhost:3000/tareas-usuarios').then (r => r.json())
+    ]).then(([alertas, tareas]) =>{
+        const pendientes = tareas.filter(t =>t.estado === 'pendiente');
+        if(alertas.length > 0 && pendientes.length > 0) {
+            const s = document.createElement('section');
+            s.classList.add('sugerencia');
+            s.textContent = 'Priorizar reposición de productos antes de pasar a otras tareas.';
+            lista.appendChild(s);
+        }
+    });
+}
+
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
     .then(() => console.log('PWA lista'));

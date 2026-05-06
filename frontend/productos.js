@@ -35,20 +35,40 @@ function cargarProductos(){
     fetch('http://localhost:3000/productos')
     .then(res => res.json())
     .then(datos =>{
-        const lista=document.getElementById('lista-productos');
+        const rol = localStorage.getItem('rol');
+        const lista = document.getElementById('lista-productos');
         lista.innerHTML='';
 
         datos.forEach(p => {
             const item = document.createElement('section');
             item.classList.add('tarjeta-tarea');
-            item.innerHTML= `<strong>${p.nombre}</strong><br>
+            item.innerHTML= 
+            `<section class= "producto-top">
+            <section>
+            <strong>${p.nombre}</strong><br>
             Precio: $${p.precio}<br>
-            Ubicación: ${p.ubicacion || "Sin ubicación"}`;
+            Ubicación: ${p.ubicacion || "SIn ubicación"}
+            </section>
+            ${rol=== 'jefe' ?
+                `<button class="btn-eliminar-producto" onclick="eliminarProducto(${p.id_producto})">🗑️</button>` : ''}
+                </section>`;
             lista.appendChild(item);
         });    
     })
         .catch(error => {
         console.error('Error al cargar productos:', error);
 });
+}
+function eliminarProducto(id) {
+    if(!confirm('Desea eliminar este producto?')) return;
+    fetch(`http://localhost:3000/productos/${id}`, {
+        method: 'DELETE'
+    })
+    .then( res => res.text())
+    .then(() => {
+        cargarProductos();
+    }) .catch(error =>{
+        console.error('Error al eliminar el producto:', error);
+    });
 }
 cargarProductos();

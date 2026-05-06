@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>LocalSmart - Alertas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header-app">
+        <section class="header-top">
+        <button class="btn-header" onclick ="ir('dashboard.html')">Volver ⬅</button>
+        <h2 class="titulo-header">LocalSmart</h2>
+        <button class="btn-header salir" onclick="cerrarSesion()">Cerrar sesión ⏻</button>
+        </section>
+        <p id="mensaje-rol"></p>
+    </header>
+<main class="contenedor">
+<section class="metricas">
+
+    <section class="metrica">
+        <h3>Productos</h3>
+        <p id="total-productos">0</p>
+    </section>
+
+    <section class="metrica metrica-alerta" onclick="ir('tareas.html')">
+        <h3>Tareas Pendientes</h3>
+        <p id="total-tareas">0</p>
+    </section>
+
+    <section class="metrica metrica" onclick="irAAlertas()">
+        <h3>Alertas</h3>
+        <p id="total-alertas">0</p>
+    </section>
+</section>
+    <section id="sugerencias">
+        <h2>Sugerencias del sistema</h2>
+        <section id="lista-sugerencias"></section>
+    </section>
+
+    <section class="top">
+        <h3>⭐ Top del mes ⭐</h3>
+        <section class="item-top">🥇 Ana</section>
+        <section class="item-top">🥈 Luis</section>
+        <section class="item-top">🥉 Marta</section>
+    </section>
+    <section class="estadisticas">
+    <h3>📊 Estadísticas de la tienda</h3>
+
+    <section class="estadistica-item">
+        Ventas del día: <strong>$1.250.000</strong>
+    </section>
+
+    <section class="estadistica-item">
+        Productos vendidos: <strong>128</strong>
+    </section>
+
+    <section class="estadistica-item">
+        Categoría más vendida: <strong>Electro Hogar</strong>
+    </section>
+</section>
+
+<section id="panel-vendedor"></section>
+    <section class="tareas">
+        <h3>📝 Ultimas tareas agregadas</h3>
+        <section class="tarjeta-tarea">🔹 Revisar góndolas</section>
+        <section class="tarjeta-tarea">🔹 Reponer productos pasillo 22</section>
+        <section class="tarjeta-tarea">🔹 Actualizar precios</section>
+    </section>
+
+</section>
+</section>
+</main>
+
+<section id="seccion-alertas"><h2>Alerta de Stock Crítico</h2></section>
+<section id="lista-alertas"></section>
+<nav class="menu">
+    <button onclick="ir('dashboard.html')"><h3>Dashboard🏠</h3></button>
+    <button onclick="ir('productos.html')"><h3>Productos📦</h3></button>
+    <button onclick="ir('tareas.html')"><h3>Tareas📝</h3></button>
+    <button onclick="ir('incentivos.html')"><h3>Incentivos🎁</h3></button>
+    <button id="btn-usuarios" onclick="ir('usuarios.html')"><h3>Usuarios👤</h3></button>
+    <button id="btn-reportes" onclick="ir('reportes.html')"><h3>Reportes📊</h3></button>
+</nav>
+
+<script src= "app.js"></script>
+</body>
+</html>

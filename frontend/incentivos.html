@@ -8,9 +8,12 @@
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
-    <header><h2>Beneficios e Incentivos</h2>
-    <button onclick ="window.location.href= 'index.html'">Volver</button>
-    <button onclick="cerrarSesion()">Cerrar Sesión </button>
+    <header class="header-app">
+        <section class="header-top">
+        <button class="btn-header" onclick ="ir('dashboard.html')">Volver ⬅</button>
+        <h2 class="titulo-header">Incentivos y Beneficios</h2> 
+        <button class="btn-header salir" onclick="cerrarSesion()">Cerrar sesión ⏻</button>
+        </section>
     </header>
     <main class="contenedor">
         <section id="seccion-puntos" class="card puntos-card">
@@ -55,6 +58,14 @@
                 </table>
         </section>
     </main>
+    <nav class="menu">
+    <button onclick="ir('dashboard.html')"><h3>Dashboard🏠</h3></button>
+    <button onclick="ir('productos.html')"><h3>Productos📦</h3></button>
+    <button onclick="ir('tareas.html')"><h3>Tareas📝</h3></button>
+    <button onclick="ir('incentivos.html')"><h3>Incentivos🎁</h3></button>
+    <button id="btn-usuarios" onclick="ir('usuarios.html')"><h3>Usuarios👤</h3></button>
+    <button id="btn-reportes" onclick="ir('reportes.html')"><h3>Reportes📊</h3></button>
+</nav>
 
     <script src="app.js"></script>
     <script src="incentivos.js"></script>

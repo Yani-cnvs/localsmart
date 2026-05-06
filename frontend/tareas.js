@@ -53,7 +53,7 @@ function cargarTareas(){
             seccion.innerHTML = `
                 <strong>${tarea.titulo}</strong><br>
                 ${tarea.descripcion}<br>
-                Fecha: ${tarea.fecha}<br>
+                Fecha: ${formatearFecha(tarea.fecha)}<br>
                 Estado: ${tarea.estado}<br>
                 Asignada a: ${tarea.usuario || 'Sin asignar'}<br>
                 ${botones}`;
@@ -110,4 +110,14 @@ function eliminar(id){
     method: 'DELETE'
     })
     .then(() => cargarTareas());
+}
+function formatearFecha(fecha) {
+        const f= new Date(fecha);
+        return f.toLocaleString('es-CL', {
+            day: '2-digit',
+            month:'2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
 }
