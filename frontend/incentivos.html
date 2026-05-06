@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Incentivos - LocalSmart</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
     <header><h2>Beneficios e Incentivos</h2>
@@ -12,9 +13,10 @@
     <button onclick="cerrarSesion()">Cerrar Sesión </button>
     </header>
     <main class="contenedor">
-        <section id="seccion-puntos" class="card">
+        <section id="seccion-puntos" class="card puntos-card">
             <h3>Mis puntos</h3>
-            <p id="puntos">0 puntos</p>
+            <p id="puntos" class="puntos-numero">0 puntos</p>
+            <span class="puntos-texto">puntos acumulados</span>
         </section>
 
         <section>

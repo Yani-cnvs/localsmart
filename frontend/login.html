@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login LocalSmart</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
 </head>
 <body>
     <header>
@@ -15,8 +16,9 @@
         <section class="login-container">
             <h2>Ingresa a tu cuenta</h2>
             
-            <button onclick = "entrar('jefe')">Ingreso Jefe de Área</button>
-            <button onclick = "entrar('vendedor')">Ingreso Vendedor/a</button>
+            <input type="email" id="correo" placeholder="Correo" required>
+            <input type="password" id="password" placeholder="Contraseña" required>
+            <button type="submit">Ingresar</button>
         </section>
     </main>
 

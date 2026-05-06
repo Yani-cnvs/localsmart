@@ -89,3 +89,7 @@ fetch ('http://localhost:3000/tareas-usuarios')
         if(el) el.textContent= data.length;
     });
 }
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+    .then(() => console.log('PWA lista'));
+}

@@ -47,14 +47,14 @@ function cargarIncentivos() {
             const rol = localStorage.getItem('rol');
 
             seccion.innerHTML=
-            `<strong><p class="estado">Canje solicitado</p></strong>
+            `${rol === 'jefe' ? `<p class="estado">Canje solicitado</p>` : ''}
             ${item.nombre}<br>
             Puntos: ${item.puntos_requeridos}
             ${rol === 'jefe' ? `
-        <button class="btn-validar">Validar canje</button>
-        <button class="btn-eliminar" onclick="eliminar(${item.id_incentivo})">Eliminar</button>
-        ` : ''}
-        `;
+            <button class="btn-validar">Validar canje</button>
+            <button class="btn-eliminar" onclick="eliminar(${item.id_incentivo})">Eliminar</button>
+            ` : ''}
+            `;
             lista.appendChild(seccion);
         });
     });
