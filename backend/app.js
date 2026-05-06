@@ -1,0 +1,291 @@
+const express = require('express');
+const cors = require('cors');
+const db = require('./config/db');
+const bcrypt = require('bcrypt');
+
+const app = express();
+const port = 3000;
+app.use(express.json());
+app.use(cors());
+
+const path = require ('path');
+
+
+app.get('/roles', async(req,res) => {
+    try {
+        const[results] =await db.query('SELECT * FROM rol');
+        res.json(results);}
+        catch(error) {
+            console.error(error);
+            res.status(500).send('Error en la consulta, intente nuevamente');
+        }
+    });
+
+app.get('/test', (req, res) => {
+    res.send('ok');
+});
+
+app.get('/productos', async(req, res) => {
+    try {
+        const [results] = await db.query('SELECT * FROM producto');
+        res.json(results); }
+        catch (error) {
+            console.error(error);
+            res.status(500).send('Error en la consulta, intente nuevamente');
+        }
+});
+
+app.get('/productos-categoria', async(req,res) => {
+    try {
+        const [results] = await db.query(`SELECT producto.nombre, producto.precio, categoria.nombre AS categoria
+            FROM producto
+            JOIN categoria ON producto.id_categoria = categoria.id_categoria`);
+        res.json(results);
+} catch (error) {
+    console.error(error);
+    res.status(500).send('Error en la consulta, intente nuevamente');
+}
+});
+
+app.get('/tareas-usuarios', async(req, res) => {
+    try {
+        const [results] = await db.query(`SELECT tarea.id_tarea, tarea.titulo, tarea.descripcion, tarea.fecha, tarea.estado, usuario.nombre AS usuario
+            FROM tarea
+            LEFT JOIN asignacion_tarea ON tarea.id_tarea = asignacion_tarea.id_tarea
+            LEFT join usuario ON asignacion_tarea.id_usuario = usuario.id_usuario
+            ORDER BY tarea.id_tarea DESC`);
+        res.json(results);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error en la consulta, intente nuevamente');
+    }
+})
+
+app.get('/puntos-incentivos', async(req, res) => {
+    try {
+        const [results] = await db.query(`SELECT usuario.nombre AS usuario, puntos_usuario.puntos_acumulados AS puntos, incentivo.nombre AS incentivo FROM usuario
+            JOIN puntos_usuario ON usuario.id_usuario = puntos_usuario.id_usuario
+            JOIN incentivo ON puntos_usuario.puntos_acumulados >= incentivo.puntos_requeridos`);
+        res.json(results);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al obtener los incentivos.');
+    }
+})
+
+app.get('/incentivos', async (req, res) =>{
+    try {
+        const [rows]= await db.query ('SELECT * FROM incentivo');
+        res.json(rows);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al mostrar incentivos');
+    }
+});
+
+app.get('/alertas-stock', async (req, res) => {
+    try { 
+    const [results] = await db.query(`
+    SELECT producto.nombre AS producto, inventario.stock_actual AS stock FROM inventario
+    JOIN producto ON inventario.id_producto = producto.id_producto 
+    WHERE inventario.stock_actual < 5`);
+        res.json(results);
+    } catch (error) {
+        console.error(error);
+        res.status(500).send('Error al obtener las alertas de stock.');    
+    }
+});
+
+app.post('/incentivos', async (req, res) => {
+    const {nombre, descripcion, puntos_requeridos} = req.body;
+    try {
+        await db.query(
+            'INSERT INTO incentivo (nombre, descripcion, puntos_requeridos) VALUES (?, ?, ?)',
+            [nombre, descripcion, puntos_requeridos]);
+            res.send('Incentivo creado!');
+        }catch (error){
+            console.error(error);
+            res.status(500).send('Error al crear un nuevo incentivo');
+        }
+});
+app.put('/incentivos/:id', async(req, res) => {
+    const id = req.params.id;
+    const{ nombre, descripcion, puntos_requeridos} = req.body;
+    try{
+        await db.query('UPDATE incentivo SET nombre= ?, descripcion= ?, puntos_requeridos= ? WHERE id_incentivo= ?',
+            [nombre, descripcion, puntos_requeridos, id]);
+            res.send('Incentivo actualizado');
+        } catch (error){
+            console.error(error);
+            res.status(500).send('Error al actualizar');
+        }
+    });
+
+app.delete('/incentivos/:id', async (req, res) => {
+    const id = req.params.id;
+    try {
+        await db.query('DELETE FROM incentivo WHERE id_incentivo= ?', [id]);
+        res.send('Incentivo eliminado!');
+    } catch(error) {
+        console.error(error);
+        res.status(500).send('Error al eliminar.');
+    }
+});
+
+app.post('/productos', async(req, res)=> {
+    try {
+        const {nombre, precio, stock, ubicacion, categoria} = req.body;
+        const [resultado] = await db.query(
+            'INSERT INTO producto (nombre, id_categoria, ubicacion, precio) VALUES (?, ?, ?, ?)',
+            [nombre, categoria, ubicacion, precio]
+        );
+        const idProducto = resultado.insertId;
+        await db.query(
+            'INSERT INTO inventario (id_producto, stock_actual) VALUES (?, ?)',
+            [idProducto, stock]
+        );
+
+        res.send('Producto agregado!');
+    } catch (error) {
+        console.error('ERROR REAL:', error);
+        res.status(500).send(error.message);
+    }
+});
+
+app.delete('/productos/:id', async (req, res) => {
+    const id= req.params.id;
+    try {
+        await db.query ('DELETE FROM historial_stock WHERE id_producto = ?', [id]);
+        await db.query ('DELETE FROM inventario WHERE id_producto = ?', [id]);
+        await db.query ('DELETE FROM producto WHERE id_producto = ?', [id]);
+        res.send('Producto eliminado!');
+    } catch(error) {
+        console.log(error);
+        res.status(500).send('Error al eliminar el producto');
+    }
+});
+
+app.post('/tareas', async(req, res) =>{
+    const {titulo, descripcion, usuarios} = req.body;
+
+    const [resultado] = await db.query(
+        'INSERT INTO tarea (titulo, descripcion, fecha, estado) VALUES (?, ?, NOW(), ?)', [titulo, descripcion, 'pendiente']
+    );
+    const idTarea = resultado.insertId;
+    for (let idUsuario of usuarios){
+        await db.query('INSERT INTO asignacion_tarea (id_usuario, id_tarea) VALUES (?, ?)', [idUsuario, idTarea]);
+    }
+    res.send('Tarea creada y asignada');
+});
+
+app.get('/usuarios', async(req, res) => {
+        const[results] = await db.query('SELECT * FROM usuario');
+        res.json(results);
+});
+
+app.get('/tareas', async(req, res) => {
+        const[results] = await db.query('SELECT * FROM tarea');
+        res.json(results);
+
+});
+
+app.get('/tareas-completadas', async(req, res) =>{
+        const[results] = await db.query(
+            `SELECT tarea.id_tarea, tarea.titulo, tarea.descripcion, tarea.fecha, tarea.estado, usuario.nombre AS usuario
+            FROM tarea
+            LEFT JOIN asignacion_tarea ON tarea.id_tarea = asignacion_tarea.id_tarea
+            LEFT JOIN usuario ON asignacion_tarea.id_usuario = usuario.id_usuario`);
+        res.json(results);
+})
+
+app.put('/tareas/:id', async(req, res) => {
+    const id= req.params.id;
+    try{
+        await db.query('UPDATE tarea SET estado = "completado" WHERE id_tarea = ?', [id]);
+    res.send('Tarea completada');
+}   catch (error) {
+    console.error(error);
+    res.status(500).send('Error al actualizar la tarea');}
+});
+
+app.delete('/tareas/:id', async(req, res) => {
+    const id = req.params.id;
+
+    try {
+        console.log('Eliminando tarea ID:', id);
+        const [tarea] = await db.query('SELECT * FROM tarea WHERE id_tarea = ?', [id]);
+
+        if(tarea.length === 0){
+            return res.status(404).send('Tarea no encontrada');
+        }
+        await db.query('DELETE FROM asignacion_tarea WHERE id_tarea = ?', [id]);
+        await db.query('DELETE FROM tarea WHERE id_tarea = ?', [id]);
+
+        res.send('Tarea eliminada correctamente');
+    } catch (error) {
+        console.error('ERROR REAL AL ELIMINAR:', error);
+        res.status(500).send(error.message);
+    }
+});
+
+app.post('/usuarios', async(req, res) => {
+    const {nombre, rol, contrasena} = req.body;
+
+    try{
+    const hash = await bcrypt.hash(contrasena, 10);
+    await db.query('INSERT INTO usuario (nombre, correo, id_rol, contrasena) VALUES (?, ?, ?)', [nombre, rol, hash]);
+    res.send('Usuario creado');
+} catch (error) {
+    console.error(error);
+    res.status(500).send('Error al crear el usuario');
+}
+});
+app.post('/login', async (req,res)=> {
+    const {correo, contrasena} = req.body;
+    try{
+        const[rows] = await db.query('SELECT * FROM usuario WHERE correo = ?', [correo]
+    );
+    if(rows.length === 0) {
+        return res.status(401).send('No existe este usuario');
+    }
+    const usuario = rows[0];
+    const valido= await bcrypt.compare (contrasena, usuario.contrasena);
+    if(!valido) {
+        return res.status(401).send('Contraseña inconrrecta');
+    }
+    res.json({
+        rol: usuario.id_rol === 1 ? 'jefe' : 'vendedor',
+        nombre: usuario.nombre
+    });
+} catch(error) {
+    console.error(error);
+    res.status(500).send('Error al iniciar sesión');
+}
+});
+
+app.delete('/usuarios/:id', async(req, res) => {
+    const id= req.params.id;
+    await db.query('DELETE FROM usuario WHERE id_usuario = ?', [id]);
+    res.send('Usuario eliminado');
+});
+
+app.get('/reportes', async(req, res) => {
+    const [results]= await db.query('SELECT * FROM reporte ORDER BY fecha DESC');
+    res.json(results);
+});
+app.post('/reportes', async(req, res) =>{
+    try{
+    const {descripcion} = req.body;
+    await db.query('INSERT INTO reporte (descripcion, fecha) VALUES(?, NOW())', [descripcion]);
+    res.send('Reporte enviado');
+} catch(error) {
+    console.error('ERROR:', error);
+    res.status(500).send(error.message);
+}
+});
+
+app.use(express.static(path.join(__dirname, '../frontend')));
+
+app.listen(port, () => {
+    console.log(`El servidor escucha en el puerto: ${port}`);
+});
