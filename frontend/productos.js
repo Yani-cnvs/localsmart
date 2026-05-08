@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const ubicacion= document.getElementById('ubicacion').value;
     const categoria= document.getElementById('categoria').value;
 //Petición POST para guardar el producto en el servidor
-    fetch('http://localhost:3000/productos',{
+    fetch('https://localsmart.onrender.com/productos',{
         method: 'POST',
         headers: {'Content-Type' : 'application/json'},
         body: JSON.stringify({nombre, precio, stock, ubicacion, categoria})
@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 //Con esta función cargamos toda la lista de productos en pantalla
 function cargarProductos(){
-    fetch('http://localhost:3000/productos')
+    fetch('https://localsmart.onrender.com/productos')
     .then(respuesta => respuesta.json())
     .then(listado =>{
         const rolActual = localStorage.getItem('rol');
@@ -67,7 +67,7 @@ function cargarProductos(){
 //Función valida solo para el rol de jefe
 function eliminarProducto(id) {
     if(!confirm('Desea eliminar este producto?')) return;
-    fetch(`http://localhost:3000/productos/${id}`, {
+    fetch(`https://localsmart.onrender.com/productos/${id}`, {
         method: 'DELETE'
     })
     .then( respuesta => respuesta.text())

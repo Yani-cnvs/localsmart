@@ -35,7 +35,7 @@ entre otros.
 Abrir la terminal en carpeta backend
 Instalar dependencias: npm install
 Ejecutar el servidor: node app.js
-(Servidor disponible en http://localhost:3000)
+(Servidor disponible en https://localsmart.onrender.com)
 
 # PARA ABRIR EL FRONTEND
 Abrir la carpeta frontend utilizando live server en visual studio code.

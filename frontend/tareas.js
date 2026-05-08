@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 function cargarUsuarios(){
-    fetch('http://localhost:3000/usuarios')
+    fetch('https://localsmart.onrender.com/usuarios')
     .then(respuesta => respuesta.json())
     .then(listado => {
         const select = document.getElementById('usuarios');
@@ -26,7 +26,7 @@ function cargarUsuarios(){
     }
 //Con esa función se muestra el listado de tareas cruzando los datos con los nombres de los usuarios
 function cargarTareas(){
-    fetch('http://localhost:3000/tareas-usuarios')
+    fetch('https://localsmart.onrender.com/tareas-usuarios')
     .then(respuesta => respuesta.json())
     .then(listado => {
 
@@ -81,7 +81,7 @@ function crearTarea(evento){
         alert('Elige un usuario');
         return;
     }
-    fetch('http://localhost:3000/tareas', {
+    fetch('https://localsmart.onrender.com/tareas', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
@@ -101,13 +101,13 @@ function crearTarea(evento){
 }
 
 function completar(id){
-    fetch(`http://localhost:3000/tareas/${id}`, {
+    fetch(`https://localsmart.onrender.com/tareas/${id}`, {
     method: 'PUT'
     })
     .then(() => cargarTareas());
 }
 function eliminar(id){
-    fetch(`http://localhost:3000/tareas/${id}`, {
+    fetch(`https://localsmart.onrender.com/tareas/${id}`, {
     method: 'DELETE'
     })
     .then(() => cargarTareas());

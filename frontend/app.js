@@ -53,7 +53,7 @@ function ocultarElem(id){
 }
 
 function cargarAlertas(){
-fetch('http://localhost:3000/alertas-stock')
+fetch('https://localsmart.onrender.com/alertas-stock')
 .then(respuesta => respuesta.json())
 .then(listado =>{
     const lista = document.getElementById ('lista-alertas');
@@ -75,14 +75,14 @@ fetch('http://localhost:3000/alertas-stock')
 });
 }
 function cargarMetricas() {
-    fetch('http://localhost:3000/productos')
+    fetch('https://localsmart.onrender.com/productos')
     .then(respuesta => respuesta.json())
     .then(listado =>{
         const total = document.getElementById('total-productos');
         if(total) total.textContent = listado.length;
     });
 
-fetch ('http://localhost:3000/tareas-usuarios')
+fetch ('https://localsmart.onrender.com/tareas-usuarios')
 .then(respuesta => respuesta.json())
 .then(listado => {
     const totalTareas = document.getElementById('total-tareas');
@@ -92,7 +92,7 @@ fetch ('http://localhost:3000/tareas-usuarios')
     }
 });
     
-    fetch('http://localhost:3000/alertas-stock')
+    fetch('https://localsmart.onrender.com/alertas-stock')
     .then (respuesta => respuesta.json())
     .then(listado => {
         const alertas = document.getElementById('total-alertas');
@@ -116,7 +116,7 @@ function cargarSugerencias() {
     const listaSugerencias = document.getElementById('lista-sugerencias');
     if(!listaSugerencias) return;
     listaSugerencias.innerHTML= '';
-    fetch('http://localhost:3000/alertas-stock')
+    fetch('https://localsmart.onrender.com/alertas-stock')
     .then (respuesta=> respuesta.json())
     .then (listaProductos=> {
         listaProductos.forEach(prod => {
@@ -129,7 +129,7 @@ function cargarSugerencias() {
         });
     });
 
-    fetch ('http://localhost:3000/tareas-usuarios')
+    fetch ('https://localsmart.onrender.com/tareas-usuarios')
     .then(peticion => peticion.json())
     .then(todasTareas => {
         const pendientes= todasTareas.filter(tarea => tarea.estado === 'pendiente');
@@ -142,8 +142,8 @@ function cargarSugerencias() {
     });
 //Se usa Promise.all para cruzar los datos de stock y tareas.
     Promise.all([
-        fetch('http://localhost:3000/alertas-stock').then (resultado => resultado.json()),
-        fetch('http://localhost:3000/tareas-usuarios').then (resultado => resultado.json())
+        fetch('https://localsmart.onrender.com/alertas-stock').then (resultado => resultado.json()),
+        fetch('https://localsmart.onrender.com/tareas-usuarios').then (resultado => resultado.json())
     ]).then(([alertas, tareas]) =>{
         const pendientes = tareas.filter(tarea =>tarea.estado === 'pendiente');
         if(alertas.length > 0 && pendientes.length > 0) {

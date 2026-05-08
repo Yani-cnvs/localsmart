@@ -36,7 +36,7 @@ function mostrarPuntos() {
     if(totalPuntos) totalPuntos.textContent= "120 puntos"
 }
 function cargarIncentivos() {
-    fetch('http://localhost:3000/incentivos')
+    fetch('https://localsmart.onrender.com/incentivos')
     .then(respuesta => respuesta.json())
     .then(listado => {
         const lista = document.getElementById('lista-incentivos');
@@ -62,7 +62,7 @@ function cargarIncentivos() {
     });
 }
 function cargarCRUD(){
-    fetch('http://localhost:3000/incentivos')
+    fetch('https://localsmart.onrender.com/incentivos')
     .then(respuesta => respuesta.json())
     .then(listado =>{
         const tabla= document.getElementById('tabla-crud');
@@ -94,8 +94,8 @@ function guardarIncentivo(evento) {
 
     const metodo= idIncentivo ? 'PUT' : 'POST';
     const urlIncentivo= idIncentivo
-    ? `http://localhost:3000/incentivos/${idIncentivo}`
-    : 'http://localhost:3000/incentivos';
+    ? `https://localsmart.onrender.com/incentivos/${idIncentivo}`
+    : 'https://localsmart.onrender.com/incentivos';
 
     fetch(urlIncentivo, {
         method: metodo,
@@ -122,7 +122,7 @@ function editar(id, nombre, descripcion, puntos) {
 
 function eliminar(id){
     if(!confirm('Desea eliminar el incentivo?')) return;
-    fetch(`http://localhost:3000/incentivos/${id}`, { method: 'DELETE' })
+    fetch(`https://localsmart.onrender.com/incentivos/${id}`, { method: 'DELETE' })
     .then(() => {
         cargarCRUD();
         cargarIncentivos();

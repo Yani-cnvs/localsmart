@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded',() => {
         evento.preventDefault();
         const descripcion= document.getElementById('descripcion').value;
 //Petición para guardar el problema en la base de datos
-    fetch('http://localhost:3000/reportes',{
+    fetch('https://localsmart.onrender.com/reportes',{
         method: 'POST',
         headers: {
             'Content-Type' : 'application/json'},
@@ -35,7 +35,7 @@ function verificarAcceso() {
     }
 }
 function cargarReportes() {
-    fetch('http://localhost:3000/reportes')
+    fetch('https://localsmart.onrender.com/reportes')
     .then(respuesta => respuesta.json())
     .then(listado =>{
         const lista= document.getElementById('lista-reportes');

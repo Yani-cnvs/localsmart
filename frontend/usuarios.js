@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', ()=> {
 });
 //Con esta función se obtienen todos los usuarios registrados
 function cargarUsuarios() {
-    fetch('http://localhost:3000/usuarios')
+    fetch('https://localsmart.onrender.com/usuarios')
     .then(respuesta => respuesta.json())
     .then(listado => {
         const lista= document.getElementById('lista-usuarios');
@@ -39,7 +39,7 @@ document.getElementById('form-usuario').addEventListener('submit', (evento) =>{
     const id_rol = (rolSeleccionado === 'jefe') ? 1 : 2;
 
     //Petición para guartdar el nuevo registro en el servidor
-    fetch('http://localhost:3000/usuarios', {
+    fetch('https://localsmart.onrender.com/usuarios', {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({nombre, correo, contrasena, rol: rolSeleccionado})
@@ -56,7 +56,7 @@ document.getElementById('form-usuario').addEventListener('submit', (evento) =>{
 //Función para eliminar el usuario por medio del id
 function eliminarUsuario(id){
     if (!confirm('Deseas eliminar este usuario?')) return;
-    fetch(`http://localhost:3000/usuarios/${id}`, {
+    fetch(`https://localsmart.onrender.com/usuarios/${id}`, {
         method: 'DELETE'
     })
     .then(respuesta=> {

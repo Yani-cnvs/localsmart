@@ -4,7 +4,7 @@ document.getElementById('form-login').addEventListener('submit', (evento) => {
     const correoIngresado= document.getElementById('correo').value;
     const contrasenaIngresada= document.getElementById('contrasena').value;
 //Se envian los datos al servidor por una peticion POST
-    fetch('http://localhost:3000/login', 
+    fetch('https://localsmart.onrender.com/login', 
         {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
