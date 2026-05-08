@@ -17,12 +17,12 @@ app.get('/roles', async(req,res) => {
         res.json(results);}
         catch(error) {
             console.error(error);
-            res.status(500).send('Error en la consulta, intente nuevamente');
+            res.status(500).json({ error: 'Error en la consulta, intente nuevamente' });
         }
     });
 
 app.get('/test', (req, res) => {
-    res.send('ok');
+    res.json({ message: 'ok' });
 });
 
 app.get('/productos', async(req, res) => {
@@ -39,7 +39,7 @@ app.get('/productos', async(req, res) => {
             res.json(results); }
         catch (error) {
             console.error(error);
-            res.status(500).send('Error en la consulta, intente nuevamente');
+            res.status(500).json({ error: 'Error en la consulta, intente nuevamente' });
         }
 });
 
@@ -51,7 +51,7 @@ app.get('/productos-categoria', async(req,res) => {
         res.json(results);
 } catch (error) {
     console.error(error);
-    res.status(500).send('Error en la consulta, intente nuevamente');
+    res.status(500).json({ error: 'Error en la consulta, intente nuevamente' });
 }
 });
 
@@ -65,7 +65,7 @@ app.get('/tareas-usuarios', async(req, res) => {
         res.json(results);
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error en la consulta, intente nuevamente');
+        res.status(500).json({ error: 'Error en la consulta, intente nuevamente' });
     }
 })
 
@@ -77,7 +77,7 @@ app.get('/puntos-incentivos', async(req, res) => {
         res.json(results);
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error al obtener los incentivos.');
+        res.status(500).json({ error: 'Error al obtener los incentivos.' });
     }
 })
 
@@ -87,7 +87,7 @@ app.get('/incentivos', async (req, res) =>{
         res.json(rows);
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error al mostrar incentivos');
+        res.status(500).json({ error: 'Error al mostrar incentivos' });
     }
 });
 
@@ -100,7 +100,7 @@ app.get('/alertas-stock', async (req, res) => {
         res.json(results);
     } catch (error) {
         console.error(error);
-        res.status(500).send('Error al obtener las alertas de stock.');    
+        res.status(500).json({ error: 'Error al obtener las alertas de stock.' });    
     }
 });
 
@@ -110,10 +110,10 @@ app.post('/incentivos', async (req, res) => {
         await db.query(
             'INSERT INTO incentivo (nombre, descripcion, puntos_requeridos) VALUES (?, ?, ?)',
             [nombre, descripcion, puntos_requeridos]);
-            res.send('Incentivo creado!');
+            res.json({ message: 'Incentivo creado!' });
         }catch (error){
             console.error(error);
-            res.status(500).send('Error al crear un nuevo incentivo');
+            res.status(500).json({ error: 'Error al crear un nuevo incentivo' });
         }
 });
 app.put('/incentivos/:id', async(req, res) => {
@@ -122,10 +122,10 @@ app.put('/incentivos/:id', async(req, res) => {
     try{
         await db.query('UPDATE incentivo SET nombre= ?, descripcion= ?, puntos_requeridos= ? WHERE id_incentivo= ?',
             [nombre, descripcion, puntos_requeridos, id]);
-            res.send('Incentivo actualizado');
+            res.json({ message: 'Incentivo actualizado' });
         } catch (error){
             console.error(error);
-            res.status(500).send('Error al actualizar');
+            res.status(500).json({ error: 'Error al actualizar' });
         }
     });
 
@@ -133,10 +133,10 @@ app.delete('/incentivos/:id', async (req, res) => {
     const id = req.params.id;
     try {
         await db.query('DELETE FROM incentivo WHERE id_incentivo= ?', [id]);
-        res.send('Incentivo eliminado!');
+        res.json({ message: 'Incentivo eliminado!' });
     } catch(error) {
         console.error(error);
-        res.status(500).send('Error al eliminar.');
+        res.status(500).json({ error: 'Error al eliminar.' });
     }
 });
 
@@ -153,10 +153,10 @@ app.post('/productos', async(req, res)=> {
             [idProducto, stock]
         );
 
-        res.send('Producto agregado!');
+        res.json({ message: 'Producto agregado!' });
     } catch (error) {
         console.error('ERROR REAL:', error);
-        res.status(500).send(error.message);
+        res.status(500).json({ error: error.message });
     }
 });
 
@@ -166,10 +166,10 @@ app.delete('/productos/:id', async (req, res) => {
         await db.query ('DELETE FROM historial_stock WHERE id_producto = ?', [id]);
         await db.query ('DELETE FROM inventario WHERE id_producto = ?', [id]);
         await db.query ('DELETE FROM producto WHERE id_producto = ?', [id]);
-        res.send('Producto eliminado!');
+        res.json({ message: 'Producto eliminado!' });
     } catch(error) {
         console.log(error);
-        res.status(500).send('Error al eliminar el producto');
+        res.status(500).json({ error: 'Error al eliminar el producto' });
     }
 });
 
@@ -183,7 +183,7 @@ app.post('/tareas', async(req, res) =>{
     for (let idUsuario of usuarios){
         await db.query('INSERT INTO asignacion_tarea (id_usuario, id_tarea) VALUES (?, ?)', [idUsuario, idTarea]);
     }
-    res.send('Tarea creada y asignada');
+    res.json({ message: 'Tarea creada y asignada' });
 });
 
 app.get('/usuarios', async(req, res) => {
@@ -210,10 +210,10 @@ app.put('/tareas/:id', async(req, res) => {
     const id= req.params.id;
     try{
         await db.query('UPDATE tarea SET estado = "completado" WHERE id_tarea = ?', [id]);
-    res.send('Tarea completada');
+    res.json({ message: 'Tarea completada' });
 }   catch (error) {
     console.error(error);
-    res.status(500).send('Error al actualizar la tarea');}
+    res.status(500).json({ error: 'Error al actualizar la tarea' });}
 });
 
 app.delete('/tareas/:id', async(req, res) => {
@@ -224,15 +224,15 @@ app.delete('/tareas/:id', async(req, res) => {
         const [tarea] = await db.query('SELECT * FROM tarea WHERE id_tarea = ?', [id]);
 
         if(tarea.length === 0){
-            return res.status(404).send('Tarea no encontrada');
+            return res.status(404).json({ error: 'Tarea no encontrada' });
         }
         await db.query('DELETE FROM asignacion_tarea WHERE id_tarea = ?', [id]);
         await db.query('DELETE FROM tarea WHERE id_tarea = ?', [id]);
 
-        res.send('Tarea eliminada correctamente');
+        res.json({ message: 'Tarea eliminada correctamente' });
     } catch (error) {
         console.error('ERROR REAL AL ELIMINAR:', error);
-        res.status(500).send(error.message);
+        res.status(500).json({ error: error.message });
     }
 });
 
@@ -245,10 +245,10 @@ app.post('/usuarios', async(req, res) => {
 
     await db.query('INSERT INTO usuario (nombre, correo, contrasena, id_rol) VALUES (?, ?, ?, ?)', [nombre, correo, hash, id_rol]);
     
-    res.send('Usuario creado');
+    res.json({ message: 'Usuario creado' });
 } catch (error) {
     console.error(error);
-    res.status(500).send('Error al crear el usuario');
+    res.status(500).json({ error: error.message });
 }
 });
 app.post('/login', async (req,res)=> {
@@ -257,12 +257,12 @@ app.post('/login', async (req,res)=> {
         const[rows] = await db.query('SELECT * FROM usuario WHERE correo = ?', [correo]
     );
     if(rows.length === 0) {
-        return res.status(401).send('No existe este usuario');
+        return res.status(401).json({ error: 'No existe este usuario' });
     }
     const usuario = rows[0];
     const valido= await bcrypt.compare (contrasena, usuario.contrasena);
     if(!valido) {
-        return res.status(401).send('Contraseña inconrrecta');
+        return res.status(401).json({ error: 'Contraseña incorrecta' });
     }
     res.json({
         rol: usuario.id_rol === 1 ? 'jefe' : 'vendedor',
@@ -270,14 +270,14 @@ app.post('/login', async (req,res)=> {
     });
 } catch(error) {
     console.error(error);
-    res.status(500).send('Error al iniciar sesión');
+    res.status(500).json({ error: 'Error al iniciar sesión' });
 }
 });
 
 app.delete('/usuarios/:id', async(req, res) => {
     const id= req.params.id;
     await db.query('DELETE FROM usuario WHERE id_usuario = ?', [id]);
-    res.send('Usuario eliminado');
+    res.json({ message: 'Usuario eliminado' });
 });
 
 app.get('/reportes', async(req, res) => {
@@ -288,15 +288,15 @@ app.post('/reportes', async(req, res) =>{
     try{
     const {descripcion} = req.body;
     await db.query('INSERT INTO reporte (descripcion, fecha) VALUES(?, NOW())', [descripcion]);
-    res.send('Reporte enviado');
+    res.json({ message: 'Reporte enviado' });
 } catch(error) {
     console.error('ERROR:', error);
-    res.status(500).send(error.message);
+    res.status(500).json({ error: error.message });
 }
 });
 
 app.use(express.static(path.join(__dirname, '../frontend')));
 
-app.listen(port, () => {
+app.listen(port, '0.0.0.0', () => {
     console.log(`El servidor escucha en el puerto: ${port}`);
 });
