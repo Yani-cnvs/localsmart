@@ -208,7 +208,7 @@ main {
     transition: transform 0.2s;
 }
 input, select, textarea {
-    width: 100;
+    width: 100%;
     padding: 8px;
     margin: 8px;
     border-radius: 7px;
