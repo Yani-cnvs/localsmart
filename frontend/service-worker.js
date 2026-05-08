@@ -3,7 +3,6 @@ const nombreCache= 'localsmart-v1';
 
 // Archivos que se guardarán para uso offline
 const archivosCache= [
-    '/',
     '/index.html',
     '/dashboard.html',
     '/productos.html',
