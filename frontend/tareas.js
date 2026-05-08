@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
+    //Al iniciar se cargan los empleados y las tareas
     cargarUsuarios();
     cargarTareas();
     const formulario = document.getElementById('form-tarea');
@@ -8,41 +9,41 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 function cargarUsuarios(){
     fetch('http://localhost:3000/usuarios')
-    .then(res => res.json())
-    .then(datos => {
+    .then(respuesta => respuesta.json())
+    .then(listado => {
         const select = document.getElementById('usuarios');
         if(!select) return;
         select.innerHTML= '';
-        datos.forEach(usuario =>{
-            const option = document.createElement('option');
-            option.value = usuario.id_usuario;
-            option.textContent = usuario.nombre;
-            select.appendChild(option);
+        listado.forEach(usuario =>{
+            const opcion = document.createElement('option');
+            opcion.value = usuario.id_usuario;
+            opcion.textContent = usuario.nombre;
+            select.appendChild(opcion);
         });
 
         })
         .catch(error => console.error(error));
     }
-
+//Con esa función se muestra el listado de tareas cruzando los datos con los nombres de los usuarios
 function cargarTareas(){
     fetch('http://localhost:3000/tareas-usuarios')
-    .then(res => res.json())
-    .then(datos => {
+    .then(respuesta => respuesta.json())
+    .then(listado => {
 
         const lista = document.getElementById('lista-tareas');
         if(!lista) return;
         lista.innerHTML = '';
-            if(datos.length === 0){
-            lista.innerHTML = '<p>No hay tareas pendientes</p>';
+            if(listado.length === 0){
+            lista.innerHTML = '<p>No hay tareas pendientes por ahora</p>';
             return;
         }
 
-        datos.forEach(tarea => {
+        listado.forEach(tarea => {
             const seccion = document.createElement('section');
             seccion.classList.add('tarjeta-tarea');
             const rol= localStorage.getItem('rol');
             let botones= '';
-
+//La lógica de los botones es: el vendedor completa, el jefe elimina
             if(rol === 'vendedor'){
                 botones += `<button onclick="completar(${tarea.id_tarea})">Completar</button>`;
             }
@@ -65,16 +66,16 @@ function cargarTareas(){
         console.error('Error al cargar las tareas:', error);
     });
 }
-
-function crearTarea(e){
-    e.preventDefault();
+//Función que procesa la creación de una tarea para uno o más usuarios
+function crearTarea(evento){
+    evento.preventDefault();
 
     const titulo = document.getElementById('titulo').value;
     const descripcion = document.getElementById('descripcion').value;
-
+//Se conviernen las opciones seleccionadas del select en un array de ids
     const seleccionados = Array.from(
         document.getElementById('usuarios').selectedOptions
-    ).map(op => op.value);
+    ).map(opcion => opcion.value);
 
     if(seleccionados.length === 0){
         alert('Elige un usuario');
@@ -88,15 +89,15 @@ function crearTarea(e){
         body: JSON.stringify({
             titulo,
             descripcion,
-            usuarios: seleccionados
+            usuarios: seleccionados//se envía el array de ids al backend
         })
     })
     .then(() => {
         alert('Tarea creada!');
         document.getElementById('form-tarea').reset();
-        cargarTareas();
+        cargarTareas();//se recarga la lista
     })
-    .catch(error => console.error(error));
+    .catch(error => console.error("Error al crear:", error));
 }
 
 function completar(id){
@@ -111,9 +112,10 @@ function eliminar(id){
     })
     .then(() => cargarTareas());
 }
-function formatearFecha(fecha) {
-        const f= new Date(fecha);
-        return f.toLocaleString('es-CL', {
+//Función para mejorar la fecha y que sea más legible
+function formatearFecha(fechaRecibida) {
+        const fecha= new Date(fechaRecibida);
+        return fecha.toLocaleString('es-CL', {
             day: '2-digit',
             month:'2-digit',
             year: 'numeric',

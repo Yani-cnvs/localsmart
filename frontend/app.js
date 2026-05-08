@@ -1,6 +1,8 @@
-function ir(pagina){
-window.location.href =pagina;
+//Redirección para navegación
+function ir(destino){
+window.location.href =destino;
 }
+//Borrar la sesión y volver al login.
 function cerrarSesion(){
     localStorage.removeItem('rol');
     window.location.href = 'index.html';
@@ -8,31 +10,31 @@ function cerrarSesion(){
 
 document.addEventListener('DOMContentLoaded', () => {
 
-const rol = localStorage.getItem('rol');
-const mensaje = document.getElementById('mensaje-rol');
-const panel = document.getElementById('panel-vendedor');
-if(rol === 'vendedor'){
-    const stads= document.querySelector('.estadisticas');
-    if(stads) stads.style.display = 'none';
+const rolActual = localStorage.getItem('rol');
+const cuadroMensaje = document.getElementById('mensaje-rol');
+const areaPanel = document.getElementById('panel-vendedor');
+if(rolActual === 'vendedor'){
+    const graficos= document.querySelector('.estadisticas');
+    if(graficos) graficos.style.display = 'none';
 }
-if(mensaje){
-if(rol=== 'jefe') {
-    mensaje.textContent = 'Panel de administración - Jefe de Área';}
-    else if (rol=== 'vendedor'){
-        mensaje.textContent = 'Panel de trabajo - Vendedor';}
+if(cuadroMensaje){
+if(rolActual=== 'jefe') {
+    cuadroMensaje.textContent = 'Panel de administración - Jefe de Área';}
+    else if (rolActual === 'vendedor'){
+        cuadroMensaje.textContent = 'Panel de trabajo - Vendedor';}
     else {
-        mensaje.textContent = 'Usuario inexistente';
+        cuadroMensaje.textContent = 'Usuario no válido, intenta de nuevo';
     }
     }
-    if(rol=== 'vendedor'){
-        ocultar('btn-usuarios');
-        ocultar('btn-reportes');
-        ocultar('form-tarea');
-        ocultar('form-producto');
+    if(rolActual === 'vendedor'){
+        ocultarElem('btn-usuarios');
+        ocultarElem('btn-reportes');
+        ocultarElem('form-tarea');
+        ocultarElem('form-producto');
 
-        if(panel) panel.style.display = 'block'
+        if(areaPanel) areaPanel.style.display = 'block'
     } else{
-        if(panel) panel.style.display= 'none';
+        if(areaPanel) areaPanel.style.display= 'none';
     }
  
     if(document.getElementById('lista-alertas')){
@@ -45,7 +47,7 @@ if(rol=== 'jefe') {
     }
 });
 
-function ocultar(id){
+function ocultarElem(id){
     const elemento = document.getElementById(id);
     if(elemento) elemento.style.display = 'none';
 }
@@ -53,14 +55,14 @@ function ocultar(id){
 function cargarAlertas(){
 fetch('http://localhost:3000/alertas-stock')
 .then(respuesta => respuesta.json())
-.then(datos =>{
+.then(listado =>{
     const lista = document.getElementById ('lista-alertas');
     if(!lista) return;
-    if (datos.length === 0){
+    if (listado.length === 0){
         lista.innerHTML = "<p>No existen alertas de stock</p>";
         return; 
     }
-    datos.forEach(alerta => {
+    listado.forEach(alerta => {
         const seccion = document.createElement('section');
         seccion.classList.add('alerta');
         seccion.innerHTML =`<strong>${alerta.producto}</strong><br>
@@ -69,90 +71,91 @@ fetch('http://localhost:3000/alertas-stock')
     });
 })
 .catch(error =>{
-    console.error('Error al conseguir alertas:', error);
+    console.error('No se han podido cargar las alertas:', error);
 });
 }
 function cargarMetricas() {
     fetch('http://localhost:3000/productos')
-    .then(res => res.json())
-    .then(data =>{
-        const el = document.getElementById('total-productos');
-        if(el) el.textContent = data.length;
+    .then(respuesta => respuesta.json())
+    .then(listado =>{
+        const total = document.getElementById('total-productos');
+        if(total) total.textContent = listado.length;
     });
 
 fetch ('http://localhost:3000/tareas-usuarios')
-.then(res => res.json())
-.then(data => {
-    const el = document.getElementById('total-tareas');
-    if(el){
-    const pendientes = data.filter(tarea => tarea.estado === 'pendiente');
-    el.textContent = pendientes.length;
+.then(respuesta => respuesta.json())
+.then(listado => {
+    const totalTareas = document.getElementById('total-tareas');
+    if(totalTareas){
+    const pendientes = listado.filter(tarea => tarea.estado === 'pendiente');
+    totalTareas.textContent = pendientes.length;
     }
 });
     
     fetch('http://localhost:3000/alertas-stock')
-    .then (res => res.json())
-    .then(data => {
-        const el = document.getElementById('total-alertas');
-        if(el) el.textContent= data.length;
+    .then (respuesta => respuesta.json())
+    .then(listado => {
+        const alertas = document.getElementById('total-alertas');
+        if(alertas) alertas.textContent= listado.length;
     });
 }
 function irAAlertas() {
-    const seccion = document.getElementById('lista-alertas');
-    if(seccion){
-        seccion.scrollIntoView({ behavior:'smooth'});
-        const alertas = seccion.querySelectorAll('.alerta');
-        seccion.classList.add('resaltar');
+    const seccionAlertas = document.getElementById('lista-alertas');
+    if(seccionAlertas){
+        seccionAlertas.scrollIntoView({ behavior:'smooth'});
+        const todasAlertas = seccionAlertas.querySelectorAll('.alerta');
+        seccionAlertas.classList.add('resaltar');
 
-        setTimeOut(()=> {
-            alertas.forEach(a => a.classList.remove('resaltar'));
+        setTimeout(()=> {
+            todasAlertas.forEach(item => item.classList.remove('resaltar'));
         }, 2000);
         }
     }
+//Funcion para cruzar datos  y aconsejar al usuario en las decisiones
 function cargarSugerencias() {
-    const lista= document.getElementById('lista-sugerencias');
-    if(!lista) return;
-    lista.innerHTML;
+    const listaSugerencias = document.getElementById('lista-sugerencias');
+    if(!listaSugerencias) return;
+    listaSugerencias.innerHTML= '';
     fetch('http://localhost:3000/alertas-stock')
-    .then (res=> res.json())
-    .then (productos=> {
-        productos.forEach(p => {
-            const s = document.createElement('section');
-            s.classList.add('sugerencia');
-            s.innerHTML = `
-            Reponer producto: <strong>${p.producto}</strong><br>
-            Stock actual: ${p.stock}`;
-            lista.appendChild(s);
+    .then (respuesta=> respuesta.json())
+    .then (listaProductos=> {
+        listaProductos.forEach(prod => {
+            const sugerencia = document.createElement('section');
+            sugerencia.classList.add('sugerencia');
+            sugerencia.innerHTML = `
+            Reponer producto: <strong>${prod.producto}</strong><br>
+            Stock actual: ${prod.stock}`;
+            listaSugerencias.appendChild(sugerencia);
         });
     });
 
     fetch ('http://localhost:3000/tareas-usuarios')
-    .then(res => res.json())
-    .then(tareas => {
-        const pendientes= tareas.filter(t => t.estado === 'pendiente');
+    .then(peticion => peticion.json())
+    .then(todasTareas => {
+        const pendientes= todasTareas.filter(tarea => tarea.estado === 'pendiente');
         if(pendientes.length === 0) {
-            const s = document.createElement('section');
-            s.classList.add('sugerencia');
-            s.textContent = 'No hay tareas pendientes. Buen trabajo equipo!';
-            lista.appendChild(s);
+            const nota = document.createElement('section');
+            nota.classList.add('sugerencia');
+            nota.textContent = 'No hay tareas pendientes. Buen trabajo equipo!';
+            listaSugerencias.appendChild(nota);
         }
     });
-
+//Se usa Promise.all para cruzar los datos de stock y tareas.
     Promise.all([
-        fetch('http://localhost:3000/alertas-stock').then (r => r.json()),
-        fetch('http://localhost:3000/tareas-usuarios').then (r => r.json())
+        fetch('http://localhost:3000/alertas-stock').then (resultado => resultado.json()),
+        fetch('http://localhost:3000/tareas-usuarios').then (resultado => resultado.json())
     ]).then(([alertas, tareas]) =>{
-        const pendientes = tareas.filter(t =>t.estado === 'pendiente');
+        const pendientes = tareas.filter(tarea =>tarea.estado === 'pendiente');
         if(alertas.length > 0 && pendientes.length > 0) {
-            const s = document.createElement('section');
-            s.classList.add('sugerencia');
-            s.textContent = 'Priorizar reposición de productos antes de pasar a otras tareas.';
-            lista.appendChild(s);
+            const aviso = document.createElement('section');
+            aviso.classList.add('sugerencia');
+            aviso.textContent = 'Dar prioridad a reposición de productos antes de pasar a otras tareas.';
+            listaSugerencias.appendChild(aviso);
         }
     });
 }
-
+//Registro del service-worker para que la funcione como PWA
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('service-worker.js')
-    .then(() => console.log('PWA lista'));
+    .then(() => console.log('Aplicación lista!'));
 }

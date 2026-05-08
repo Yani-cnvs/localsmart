@@ -1,51 +1,53 @@
 document.addEventListener('DOMContentLoaded', ()=> {
-
-const rol= localStorage.getItem('rol');
-    if(rol === 'jefe'){
-        ocultar('seccion-solicitud');
-        ocultar('seccion-puntos');
-    } else if(rol === 'vendedor'){
-        ocultar('seccion-crud');
+//Aquí verificamos el rol para mostrar lo que corresponda a cada uno
+const rolActual= localStorage.getItem('rol');
+    if(rolActual === 'jefe'){
+        ocultarElem('seccion-solicitud');
+        ocultarElem('seccion-puntos');
+    } else if(rolActual === 'vendedor'){
+        //Los vendedores no pueden crear ni borrar los incentivos
+        ocultarElem('seccion-crud');
 }
     cargarIncentivos();
     mostrarPuntos();
     cargarCRUD();
-
-    const formSolicitud = document.getElementById('form-incentivo');
-    if(formSolicitud){
-        formSolicitud.addEventListener('submit', (e) =>{
-            e.preventDefault();
+//Listener para el formulario de canje
+    const formularioSolicitud = document.getElementById('form-incentivo');
+    if(formularioSolicitud){
+        formularioSolicitud.addEventListener('submit', (evento) =>{
+            evento.preventDefault();
             alert('Solicitud enviada!');
-            e.target.reset();
+            evento.target.reset();
         });
-}
-    const formCrud = document.getElementById('form-crud');
-    if(formCrud){
-        formCrud.addEventListener('submit', guardarIncentivo);
+}//Listener para el formulario que administra un jefe
+    const formularioCrud = document.getElementById('form-crud');
+    if(formularioCrud){
+        formularioCrud.addEventListener('submit', guardarIncentivo);
     }
 
-});
-function ocultar(id) {
-    const elem= document.getElementById(id);
-    if (elem) elem.style.display= 'none';
+});//Con esta función se limpia la interfaz según el rol
+function ocultarElem(id) {
+    const elemento= document.getElementById(id);
+    if (elemento) elemento.style.display= 'none';
 }
-
+//Aquí se usaron datos de prueba para mostrar puntos
 function mostrarPuntos() {
-    const elem= document.getElementById('puntos');
-    if(elem) elem.textContent= "120 puntos"
+    const totalPuntos= document.getElementById('puntos');
+    if(totalPuntos) totalPuntos.textContent= "120 puntos"
 }
 function cargarIncentivos() {
     fetch('http://localhost:3000/incentivos')
-    .then(res => res.json())
-    .then(datos => {
+    .then(respuesta => respuesta.json())
+    .then(listado => {
         const lista = document.getElementById('lista-incentivos');
+        if(!lista) return;
         lista.innerHTML = '';
 
-        datos.forEach(item =>{
+        listado.forEach(item =>{
             const seccion = document.createElement('section');
             seccion.classList.add('card-incentivo');
             const rol = localStorage.getItem('rol');
-
+//Renderizado condiciona ya que solo el jefe ve los botones que sirven para gestionar.
             seccion.innerHTML=
             `${rol === 'jefe' ? `<p class="estado">Canje solicitado</p>` : ''}
             ${item.nombre}<br>
@@ -61,53 +63,55 @@ function cargarIncentivos() {
 }
 function cargarCRUD(){
     fetch('http://localhost:3000/incentivos')
-    .then(res => res.json())
-    .then(datos =>{
+    .then(respuesta => respuesta.json())
+    .then(listado =>{
         const tabla= document.getElementById('tabla-crud');
+        if(!tabla) return;
         tabla.innerHTML= '';
 
-        datos.forEach(i => {
+        listado.forEach(fila => {
             tabla.innerHTML += 
             `<tr>
-            <td>${i.nombre}</td>
-            <td>${i.descripcion}</td>
-            <td>${i.puntos_requeridos}</td>
+            <td>${fila.nombre}</td>
+            <td>${fila.descripcion}</td>
+            <td>${fila.puntos_requeridos}</td>
             <td>
-            <button onclick= "editar(${i.id_incentivo}, '${i.nombre}', '${i.descripcion}', ${i.puntos_requeridos})">Editar</button>
-            <button onclick= "eliminar(${i.id_incentivo})">Eliminar</button>
+            <button onclick= "editar(${fila.id_incentivo}, '${fila.nombre}', '${fila.descripcion}', ${fila.puntos_requeridos})">Editar</button>
+            <button onclick= "eliminar(${fila.id_incentivo})">Eliminar</button>
             </td>
             </tr>`;
         });
     });
 }
-function guardarIncentivo(e) {
-    e.preventDefault();
+//Esta función maneja la creación y la actualización de los incnetivos
+function guardarIncentivo(evento) {
+    evento.preventDefault();
 
-    const id= document.getElementById('id-incentivo').value;
+    const idIncentivo= document.getElementById('id-incentivo').value;
     const nombre= document.getElementById('crud-nombre').value;
     const descripcion= document.getElementById('crud-descripcion').value;
     const puntos= document.getElementById('crud-puntos').value;
 
-    const metodo= id ? 'PUT' : 'POST';
-    const url= id
-    ? `http://localhost:3000/incentivos/${id}`
+    const metodo= idIncentivo ? 'PUT' : 'POST';
+    const urlIncentivo= idIncentivo
+    ? `http://localhost:3000/incentivos/${idIncentivo}`
     : 'http://localhost:3000/incentivos';
 
-    fetch(url, {
+    fetch(urlIncentivo, {
         method: metodo,
         headers: {'Content-Type' : 'application/json'},
         body: JSON.stringify({
             nombre, descripcion, puntos_requeridos: puntos
         })
         })
-        .then(res => res.text())
-        .then(datos =>{
-            console.log('RESPUESTA:', datos);
+        .then(respuesta => respuesta.text())
+        .then (resultado =>{
+            console.log('Resultado operación:', resultado);
             document.getElementById('form-crud').reset();
             cargarCRUD();
             cargarIncentivos();
         })
-        .catch(error=> console.error('ERROR:', error));
+        .catch(error=> console.error('Error en proceso:', error));
 }
 function editar(id, nombre, descripcion, puntos) {
     document.getElementById('id-incentivo').value = id;
@@ -118,10 +122,9 @@ function editar(id, nombre, descripcion, puntos) {
 
 function eliminar(id){
     if(!confirm('Desea eliminar el incentivo?')) return;
-    fetch(`http://localhost:3000/incentivos/${id}`,
-        {
-            method: 'DELETE'
-        }
-    )
-    .then(()=> cargarCRUD());
+    fetch(`http://localhost:3000/incentivos/${id}`, { method: 'DELETE' })
+    .then(() => {
+        cargarCRUD();
+        cargarIncentivos();
+    });
 }

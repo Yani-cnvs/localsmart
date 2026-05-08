@@ -27,8 +27,16 @@ app.get('/test', (req, res) => {
 
 app.get('/productos', async(req, res) => {
     try {
-        const [results] = await db.query('SELECT * FROM producto');
-        res.json(results); }
+        const [results] = await db.query(`SELECT producto.id_producto, producto.nombre, producto.precio, producto.ubicacion,
+            COALESCE(SUM(CASE
+                WHEN historial_stock.tipo_movimiento = 'entrada' THEN historial_stock.cantidad
+                WHEN historial_stock.tipo_movimiento = 'salida' THEN -historial_stock.cantidad
+                ELSE 0
+                END), 0) AS stock
+            FROM producto
+            LEFT JOIN historial_stock ON producto.id_producto = historial_stock.id_producto
+            GROUP BY producto.id_producto`);
+            res.json(results); }
         catch (error) {
             console.error(error);
             res.status(500).send('Error en la consulta, intente nuevamente');
@@ -229,11 +237,14 @@ app.delete('/tareas/:id', async(req, res) => {
 });
 
 app.post('/usuarios', async(req, res) => {
-    const {nombre, rol, contrasena} = req.body;
+    const {nombre, correo, contrasena, rol} = req.body;
 
     try{
     const hash = await bcrypt.hash(contrasena, 10);
-    await db.query('INSERT INTO usuario (nombre, correo, id_rol, contrasena) VALUES (?, ?, ?)', [nombre, rol, hash]);
+    const id_rol = rol === 'jefe' ? 1 : 2;
+
+    await db.query('INSERT INTO usuario (nombre, correo, contrasena, id_rol) VALUES (?, ?, ?, ?)', [nombre, correo, hash, id_rol]);
+    
     res.send('Usuario creado');
 } catch (error) {
     console.error(error);

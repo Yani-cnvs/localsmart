@@ -396,3 +396,67 @@ input, select {
 .btn-eliminar-usuario:hover {
     background: #ffeaea;
 }
+
+
+@media(max-width: 768px) {
+    .contenedor {
+        padding: 0 12px 90px 12px;
+    }
+    .header-top {
+        flex-direction: column;
+        gap: 10px;
+    }
+    .titulo-header {
+        font-size: 20px;
+    }
+    .metricas {
+        flex-direction: column;
+    }
+    .metrica {
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .usuario-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .producto-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap:  10px;
+    }
+    .btn-eliminar-producto {
+        align-self: flex-end;
+    }
+    .menu {
+        overflow-x: auto;
+        justify-content: flex-start;
+        padding: 10px;
+        gap:8px;
+    }
+    .menu button {
+        flex-shrink: 0;
+        white-space: nowrap;
+    }
+    input,
+    select,
+    textarea,
+    button{
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .top,
+    .estadisticas {
+        max-width: 100%;
+    }
+    .puntos-card {
+        margin: 15px 0;
+        padding: 20px;
+    }
+    .tarjeta-tarea,
+    .card-incentivo,
+    .usuario-card {
+        padding: 14px;
+    }
+}

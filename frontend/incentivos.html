@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Incentivos - LocalSmart</title>
     <link rel="stylesheet" href="style.css">
+    <!--manifest para que el navegador la reconozca como PWA-->
     <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -21,7 +22,7 @@
             <p id="puntos" class="puntos-numero">0 puntos</p>
             <span class="puntos-texto">puntos acumulados</span>
         </section>
-
+<!--Aquí se cargan los beneficios gracias al fetch-->
         <section>
             <h2>Beneficios Disponibles</h2>
             <section id="lista-incentivos"></section>
@@ -34,7 +35,7 @@
                 <button type="submit">Solicitar</button>
                 </form>
                 </section>
-
+<!--CRUD visible solo para el jefe, se debería ocultar al ingresar como vendedor-->
             <section id="seccion-crud">
                 <h3>Gestión de Incentivos</h3>
                 <form id="form-crud">
@@ -45,6 +46,7 @@
 
                     <button type="submit">Guardar</button>
                 </form>
+                <!--Listado par aadministrar y modificiar los beneficios-->
                 <table>
                     <thead>
                         <tr>
@@ -66,7 +68,7 @@
     <button id="btn-usuarios" onclick="ir('usuarios.html')"><h3>Usuarios👤</h3></button>
     <button id="btn-reportes" onclick="ir('reportes.html')"><h3>Reportes📊</h3></button>
 </nav>
-
+<!--app.js para funciones globales e incentivos.js para lógica específica.-->
     <script src="app.js"></script>
     <script src="incentivos.js"></script>
 </body>

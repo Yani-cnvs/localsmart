@@ -15,6 +15,7 @@
         <button class="btn-header salir" onclick="cerrarSesion()">Cerrar sesión ⏻</button>
         </section>
     </header>
+    <!--Formulario para que el jefe asigne tareas-->
     <main class="contenedor">
         <section class="card">
             <h3>Nueva tarea</h3>
@@ -23,10 +24,12 @@
                 <input type="text" id="descripcion" placeholder="Descripción" required>
                 <input type="date" id="fecha" required>
                 <label>Asignar usuario(os):</label>
+                <!--Se puede asignar una misma tarea a más de un usuario-->
                 <select id="usuarios" multiple required></select>
                 <button type="submit">Crear tarea</button>
             </form>
         </section>
+        <!--En esta sección se renderizan las tareas activas por medio de JS-->
         <section class="card">
             <h3>Listado de Tareas</h3>
             <section id="lista-tareas"></section>

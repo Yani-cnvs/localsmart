@@ -17,12 +17,14 @@
     </header>
     <main>
         <section class="card">
+            <!--Formulario para registrar a los nuevos trabajadores-->
             <h3>Agregar nuevo usuario</h3>
             <form id="form-usuario">
                 <input type="text" id="nombre" placeholder="Nombre" required>
                 <input type="email" id="correo" placeholder="Correo" required>
                 <input type="password" id="contrasena" placeholder="Contraseña" required>
                 <select id="rol" required>
+                    <!--De acuerdo al rol serán los permisos que tenga el usuario-->
                     <option value="">Seleccionar rol</option>
                     <option value="jefe">Jefe</option>
                     <option value="vendedor">Vendedor</option>
@@ -31,6 +33,7 @@
             </form>
         </section>
         <section>
+            <!--Contenedor dinámico para listar todos los trabajadores-->
             <h3>Listado de usuarios</h3>
             <section id="lista-usuarios"></section>
         </section>
