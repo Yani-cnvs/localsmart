@@ -9,5 +9,8 @@ const connection = mysql.createPool({
 });
 
 console.log('Conectado correctamente a la base de datos!');
+console.log("HOST:", process.env.MYSQLHOST);
+console.log("USER:", process.env.MYSQLUSER);
+console.log("DB:", process.env.MYSQLDATABASE);
 
 module.exports = connection;
