@@ -1,4 +1,4 @@
-### BIENVENIDO A LOCALSMARTA ###
+### BIENVENIDO A LOCALSMART ###
 Es un sistema web desarrollado como proyecto de títilo para apoyar la operación de las tiendas de retail. Permite gestionar producto, tareas, incentivos para trabajadores y apoya las decisiones por medio de alertas automáticas relacionadas con las tareas y el stock de productos.
 
 ## TECNOLOGÍAS USADAS
