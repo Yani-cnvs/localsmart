@@ -42,13 +42,14 @@
                 </section>
             
     </main>
-    <nav class="menu">
-    <button onclick="ir('dashboard.html')"><h3>Dashboard🏠</h3></button>
-    <button onclick="ir('productos.html')"><h3>Productos📦</h3></button>
-    <button onclick="ir('tareas.html')"><h3>Tareas📝</h3></button>
-    <button onclick="ir('incentivos.html')"><h3>Incentivos🎁</h3></button>
-    <button id="btn-usuarios" onclick="ir('usuarios.html')"><h3>Usuarios👤</h3></button>
-    <button id="btn-reportes" onclick="ir('reportes.html')"><h3>Reportes📊</h3></button>
+<nav class="menu">
+    <button onclick="ir('dashboard.html')"><hspan class="menu-icono">🏠</span><span class="menu-texto">Dashboard</span></button>
+    <button onclick="ir('productos.html')"><hspan class="menu-icono">📦</span><span class="menu-texto">Productos</span></button>
+    <button onclick="ir('tareas.html')"><hspan class="menu-icono">📝</span><span class="menu-texto">Tareas</span></button>
+    <button onclick="ir('incentivos.html')"><hspan class="menu-icono">🎁</span><span class="menu-texto">Incentivos</span></button>
+    <!--estoos botones del menú son solo accesibles para los jefes-->
+    <button id="btn-usuarios" onclick="ir('usuarios.html')"><span class="menu-icono">👤</span><span class="menu-texto">Usuarios</span></button>
+    <button id="btn-reportes" onclick="ir('reportes.html')"><span class="menu-icono">📊</span><span class="menu-texto">Reportes</span></button>
 </nav>
 
     <script src="app.js"></script>
