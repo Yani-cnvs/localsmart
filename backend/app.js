@@ -1,3 +1,4 @@
+//Importando librerías necesarias
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
@@ -11,7 +12,7 @@ app.use(cors());
 
 const path = require ('path');
 
-
+//A partir de aquí se crean las rutas para cada ennpoint
 app.get('/roles', async(req,res) => {
     try {
         const[results] =await db.query('SELECT * FROM rol');
