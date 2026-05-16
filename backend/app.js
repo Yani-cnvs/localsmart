@@ -57,6 +57,38 @@ app.get('/productos-categoria', async(req,res) => {
 }
 });
 
+app.post('/productos', async(req, res)=> {
+    try {
+        const {nombre, precio, stock, ubicacion, categoria} = req.body;
+        const [resultado] = await db.query(
+            'INSERT INTO producto (nombre, id_categoria, ubicacion, precio) VALUES (?, ?, ?, ?)',
+            [nombre, categoria, ubicacion, precio]
+        );
+        const idProducto = resultado.insertId;
+        await db.query(
+            'INSERT INTO inventario (id_producto, stock_actual) VALUES (?, ?)',
+            [idProducto, stock]
+        );
+
+        res.json({ message: 'Producto agregado!' });
+    } catch (error) {
+        console.error('ERROR REAL:', error);
+        res.status(500).json({ error: error.message });
+    }
+});
+app.delete('/productos/:id', async (req, res) => {
+    const id= req.params.id;
+    try {
+        await db.query ('DELETE FROM historial_stock WHERE id_producto = ?', [id]);
+        await db.query ('DELETE FROM inventario WHERE id_producto = ?', [id]);
+        await db.query ('DELETE FROM producto WHERE id_producto = ?', [id]);
+        res.json({ message: 'Producto eliminado!' });
+    } catch(error) {
+        console.log(error);
+        res.status(500).json({ error: 'Error al eliminar el producto' });
+    }
+});
+
 app.get('/tareas-usuarios', async(req, res) => {
     try {
         const [results] = await db.query(`SELECT tarea.id_tarea, tarea.titulo, tarea.descripcion, tarea.fecha, tarea.estado, usuario.nombre AS usuario
@@ -71,18 +103,6 @@ app.get('/tareas-usuarios', async(req, res) => {
     }
 })
 
-app.get('/puntos-incentivos', async(req, res) => {
-    try {
-        const [results] = await db.query(`SELECT usuario.nombre AS usuario, puntos_usuario.puntos_acumulados AS puntos, incentivo.nombre AS incentivo FROM usuario
-            JOIN puntos_usuario ON usuario.id_usuario = puntos_usuario.id_usuario
-            JOIN incentivo ON puntos_usuario.puntos_acumulados >= incentivo.puntos_requeridos`);
-        res.json(results);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al obtener los incentivos.' });
-    }
-})
-
 app.get('/incentivos', async (req, res) =>{
     try {
         const [rows]= await db.query ('SELECT * FROM incentivo');
@@ -92,20 +112,6 @@ app.get('/incentivos', async (req, res) =>{
         res.status(500).json({ error: 'Error al mostrar incentivos' });
     }
 });
-
-app.get('/alertas-stock', async (req, res) => {
-    try { 
-    const [results] = await db.query(`
-    SELECT producto.nombre AS producto, inventario.stock_actual AS stock FROM inventario
-    JOIN producto ON inventario.id_producto = producto.id_producto 
-    WHERE inventario.stock_actual < 5`);
-        res.json(results);
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ error: 'Error al obtener las alertas de stock.' });    
-    }
-});
-
 app.post('/incentivos', async (req, res) => {
     const {nombre, descripcion, puntos_requeridos} = req.body;
     try {
@@ -130,7 +136,6 @@ app.put('/incentivos/:id', async(req, res) => {
             res.status(500).json({ error: 'Error al actualizar' });
         }
     });
-
 app.delete('/incentivos/:id', async (req, res) => {
     const id = req.params.id;
     try {
@@ -142,37 +147,36 @@ app.delete('/incentivos/:id', async (req, res) => {
     }
 });
 
-app.post('/productos', async(req, res)=> {
+app.get('/puntos-incentivos', async(req, res) => {
     try {
-        const {nombre, precio, stock, ubicacion, categoria} = req.body;
-        const [resultado] = await db.query(
-            'INSERT INTO producto (nombre, id_categoria, ubicacion, precio) VALUES (?, ?, ?, ?)',
-            [nombre, categoria, ubicacion, precio]
-        );
-        const idProducto = resultado.insertId;
-        await db.query(
-            'INSERT INTO inventario (id_producto, stock_actual) VALUES (?, ?)',
-            [idProducto, stock]
-        );
-
-        res.json({ message: 'Producto agregado!' });
+        const [results] = await db.query(`SELECT usuario.nombre AS usuario, puntos_usuario.puntos_acumulados AS puntos, incentivo.nombre AS incentivo FROM usuario
+            JOIN puntos_usuario ON usuario.id_usuario = puntos_usuario.id_usuario
+            JOIN incentivo ON puntos_usuario.puntos_acumulados >= incentivo.puntos_requeridos`);
+        res.json(results);
     } catch (error) {
-        console.error('ERROR REAL:', error);
-        res.status(500).json({ error: error.message });
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener los incentivos.' });
+    }
+})
+
+
+app.get('/alertas-stock', async (req, res) => {
+    try { 
+    const [results] = await db.query(`
+    SELECT producto.nombre AS producto, inventario.stock_actual AS stock FROM inventario
+    JOIN producto ON inventario.id_producto = producto.id_producto 
+    WHERE inventario.stock_actual < 5`);
+        res.json(results);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Error al obtener las alertas de stock.' });    
     }
 });
 
-app.delete('/productos/:id', async (req, res) => {
-    const id= req.params.id;
-    try {
-        await db.query ('DELETE FROM historial_stock WHERE id_producto = ?', [id]);
-        await db.query ('DELETE FROM inventario WHERE id_producto = ?', [id]);
-        await db.query ('DELETE FROM producto WHERE id_producto = ?', [id]);
-        res.json({ message: 'Producto eliminado!' });
-    } catch(error) {
-        console.log(error);
-        res.status(500).json({ error: 'Error al eliminar el producto' });
-    }
+app.get('/tareas', async(req, res) => {
+        const[results] = await db.query('SELECT * FROM tarea');
+        res.json(results);
+
 });
 
 app.post('/tareas', async(req, res) =>{
@@ -187,27 +191,6 @@ app.post('/tareas', async(req, res) =>{
     }
     res.json({ message: 'Tarea creada y asignada' });
 });
-
-app.get('/usuarios', async(req, res) => {
-        const[results] = await db.query('SELECT * FROM usuario');
-        res.json(results);
-});
-
-app.get('/tareas', async(req, res) => {
-        const[results] = await db.query('SELECT * FROM tarea');
-        res.json(results);
-
-});
-
-app.get('/tareas-completadas', async(req, res) =>{
-        const[results] = await db.query(
-            `SELECT tarea.id_tarea, tarea.titulo, tarea.descripcion, tarea.fecha, tarea.estado, usuario.nombre AS usuario
-            FROM tarea
-            LEFT JOIN asignacion_tarea ON tarea.id_tarea = asignacion_tarea.id_tarea
-            LEFT JOIN usuario ON asignacion_tarea.id_usuario = usuario.id_usuario`);
-        res.json(results);
-})
-
 app.put('/tareas/:id', async(req, res) => {
     const id= req.params.id;
     try{
@@ -237,6 +220,23 @@ app.delete('/tareas/:id', async(req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+
+app.get('/usuarios', async(req, res) => {
+        const[results] = await db.query('SELECT * FROM usuario');
+        res.json(results);
+});
+
+
+app.get('/tareas-completadas', async(req, res) =>{
+        const[results] = await db.query(
+            `SELECT tarea.id_tarea, tarea.titulo, tarea.descripcion, tarea.fecha, tarea.estado, usuario.nombre AS usuario
+            FROM tarea
+            LEFT JOIN asignacion_tarea ON tarea.id_tarea = asignacion_tarea.id_tarea
+            LEFT JOIN usuario ON asignacion_tarea.id_usuario = usuario.id_usuario`);
+        res.json(results);
+})
+
 
 app.post('/usuarios', async(req, res) => {
     const {nombre, correo, contrasena, rol} = req.body;
