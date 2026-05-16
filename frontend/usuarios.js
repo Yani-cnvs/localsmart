@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', ()=> {
+    const rolActual= localStorage.getItem('rol');
+    if(rolActual !== 'jefe'){
+        alert("No tienes permiso para acceder a esta página");
+        window.location.href = 'index.html';
+        return;
+    }
     //Se carga la lista de usuarios
     cargarUsuarios();
 });

@@ -1,8 +1,9 @@
-document.addEventListener('DOMContentLoaded', () => {
-    //Se carga la página con los productos que estan en la base de datos
-    cargarProductos();
-})
+let todosLosProductos = [];
 
+document.addEventListener('DOMContentLoaded', () => {
+    //Se carga la página con los productos que están en la base de datos
+    cargarProductos();
+});
     const formularioProducto = document.getElementById('form-producto');
 
     if(formularioProducto){
