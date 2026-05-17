@@ -29,15 +29,14 @@ app.get('/test', (req, res) => {
 
 app.get('/productos', async(req, res) => {
     try {
-        const [results] = await db.query(`SELECT producto.id_producto, producto.nombre, producto.precio, producto.ubicacion,
-            COALESCE(SUM(CASE
-                WHEN historial_stock.tipo_movimiento = 'entrada' THEN historial_stock.cantidad
-                WHEN historial_stock.tipo_movimiento = 'salida' THEN -historial_stock.cantidad
-                ELSE 0
-                END), 0) AS stock
-            FROM producto
-            LEFT JOIN historial_stock ON producto.id_producto = historial_stock.id_producto
-            GROUP BY producto.id_producto`);
+        const [results] = await db.query(`SELECT p.id_producto, p.nombre, p.precio, p.ubicacion,
+            IFNULL(CAST(SUM(CASE
+            WHEN h.tipo_movimiento= 'entrada' THEN h.cantidad
+            WHEN h.tipo_movimiento= 'salida' THEN -h.cantidad ELSE 0 END)
+            AS SIGNED), 0) AS stock FROM producto p
+            LEFT JOIN historial_stock h ON p.id_producto = h.id_producto
+            GROUP BY p.id_producto
+            `);
             res.json(results); }
         catch (error) {
             console.error(error);
@@ -66,7 +65,7 @@ app.post('/productos', async(req, res)=> {
         );
         const idProducto = resultado.insertId;
         await db.query(
-            'INSERT INTO inventario (id_producto, stock_actual) VALUES (?, ?)',
+            'INSERT INTO historial_stock (id_producto, tipo_movimiento, cantidad, fecha) VALUES (?, "entrada", ?, NOW())',
             [idProducto, stock]
         );
 
@@ -80,7 +79,6 @@ app.delete('/productos/:id', async (req, res) => {
     const id= req.params.id;
     try {
         await db.query ('DELETE FROM historial_stock WHERE id_producto = ?', [id]);
-        await db.query ('DELETE FROM inventario WHERE id_producto = ?', [id]);
         await db.query ('DELETE FROM producto WHERE id_producto = ?', [id]);
         res.json({ message: 'Producto eliminado!' });
     } catch(error) {
@@ -163,9 +161,14 @@ app.get('/puntos-incentivos', async(req, res) => {
 app.get('/alertas-stock', async (req, res) => {
     try { 
     const [results] = await db.query(`
-    SELECT producto.nombre AS producto, inventario.stock_actual AS stock FROM inventario
-    JOIN producto ON inventario.id_producto = producto.id_producto 
-    WHERE inventario.stock_actual < 5`);
+    SELECT producto.nombre AS producto, COALESCE(SUM(CASE
+    WHEN historial_stock.tipo_movimiento = 'entrada' THEN historial_stock.cantidad
+    WHEN historial_stock.tipo_movimiento = 'salida' THEN -historial_stock.cantidad
+    ELSE 0 END), 0) AS stock
+    FROM producto
+    LEFT JOIN historial_stock ON producto.id_producto= historial_stock.id_producto
+    GROUP BY producto.id_producto
+    HAVING stock <5 ))`);
         res.json(results);
     } catch (error) {
         console.error(error);
@@ -174,9 +177,13 @@ app.get('/alertas-stock', async (req, res) => {
 });
 
 app.get('/tareas', async(req, res) => {
-        const[results] = await db.query('SELECT * FROM tarea');
-        res.json(results);
-
+        try{
+            const[results] = await db.query('SELECT * FROM tarea');
+            res.json(results);
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Error al obtener las tareas' });
+        }
 });
 
 app.post('/tareas', async(req, res) =>{
@@ -223,8 +230,14 @@ app.delete('/tareas/:id', async(req, res) => {
 
 
 app.get('/usuarios', async(req, res) => {
-        const[results] = await db.query('SELECT * FROM usuario');
+        try{
+            const[results] = await db.query('SELECT * FROM usuario');
         res.json(results);
+}
+catch (error) {
+    console.error(error);
+    res.status(500).json({error: 'Error al obtener los usuarios' });
+}
 });
 
 
@@ -278,9 +291,15 @@ app.post('/login', async (req,res)=> {
 
 app.delete('/usuarios/:id', async(req, res) => {
     const id= req.params.id;
-    await db.query('DELETE FROM usuario WHERE id_usuario = ?', [id]);
-    res.json({ message: 'Usuario eliminado' });
-});
+    try{
+        await db.query('DELETE FROM asignacion_tarea WHERE id_usuario = ?', [id]);
+        await db.query('DELETE FROM usuario WHERE id_usuario = ?', [id]);
+        res.json({ message: 'Usuario eliminado' });
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({ error: 'Error al eliminar el usuario' });
+        }
+    });
 
 app.get('/reportes', async(req, res) => {
     const [results]= await db.query('SELECT * FROM reporte ORDER BY fecha DESC');
