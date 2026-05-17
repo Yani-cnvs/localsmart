@@ -29,13 +29,13 @@ app.get('/test', (req, res) => {
 
 app.get('/productos', async(req, res) => {
     try {
-        const [results] = await db.query(`SELECT p.id_producto, p.nombre, p.precio, p.ubicacion,
+        const [results] = await db.query(`SELECT producto.id_producto, producto.nombre, producto.precio, producto.ubicacion,
             IFNULL(CAST(SUM(CASE
-            WHEN h.tipo_movimiento= 'entrada' THEN h.cantidad
-            WHEN h.tipo_movimiento= 'salida' THEN -h.cantidad ELSE 0 END)
-            AS SIGNED), 0) AS stock FROM producto p
-            LEFT JOIN historial_stock h ON p.id_producto = h.id_producto
-            GROUP BY p.id_producto
+            WHEN historial_stock.tipo_movimiento= 'entrada' THEN historial_stock.cantidad
+            WHEN historial_stock.tipo_movimiento= 'salida' THEN -historial_stock.cantidad ELSE 0 END)
+            AS SIGNED), 0) AS stock FROM producto
+            LEFT JOIN historial_stock ON producto.id_producto = historial_stock.id_producto
+            GROUP BY producto.id_producto
             `);
             res.json(results); }
         catch (error) {
@@ -65,8 +65,8 @@ app.post('/productos', async(req, res)=> {
         );
         const idProducto = resultado.insertId;
         await db.query(
-            'INSERT INTO historial_stock (id_producto, tipo_movimiento, cantidad, fecha) VALUES (?, "entrada", ?, NOW())',
-            [idProducto, stock]
+            'INSERT INTO historial_stock (id_producto, tipo_movimiento, cantidad, fecha) VALUES (?, ?, ?, NOW())',
+            [idProducto, 'entrada', parseInt(stock)]
         );
 
         res.json({ message: 'Producto agregado!' });
@@ -75,15 +75,17 @@ app.post('/productos', async(req, res)=> {
         res.status(500).json({ error: error.message });
     }
 });
-app.delete('/productos/:id', async (req, res) => {
-    const id= req.params.id;
-    try {
-        await db.query ('DELETE FROM historial_stock WHERE id_producto = ?', [id]);
-        await db.query ('DELETE FROM producto WHERE id_producto = ?', [id]);
-        res.json({ message: 'Producto eliminado!' });
-    } catch(error) {
+app.delete('/productos/:id', async (req,res)=> {
+    const id = req.params.id;
+    try 
+    {
+        await db.query('DELETE FROM historial_stock WHERE id_producto = ?', [id]);
+        await db.query('DELETE FROM producto WHERE id_producto = ?', [id]);
+        res.json({message: 'Producto eliminado!'});
+    } 
+    catch(error){
         console.log(error);
-        res.status(500).json({ error: 'Error al eliminar el producto' });
+        res.status(500).json({error: 'Error al eliminar el producto' });
     }
 });
 
@@ -168,7 +170,7 @@ app.get('/alertas-stock', async (req, res) => {
     FROM producto
     LEFT JOIN historial_stock ON producto.id_producto= historial_stock.id_producto
     GROUP BY producto.id_producto
-    HAVING stock <5 ))`);
+    HAVING stock <5`);
         res.json(results);
     } catch (error) {
         console.error(error);
