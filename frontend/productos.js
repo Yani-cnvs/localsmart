@@ -20,7 +20,12 @@ document.addEventListener('DOMContentLoaded', () => {
         headers: {'Content-Type' : 'application/json'},
         body: JSON.stringify({nombre, precio, stock, ubicacion, categoria})
     })
-    .then(respuesta => respuesta.text())
+    .then(respuesta => {
+            if(!respuesta.ok) {
+                throw new Error ( 'Error al guardar');
+            }
+            return respuesta.json();
+        })
     .then(datos =>{
         console.log(datos);
         alert('Producto agregado exitosamente!');
@@ -71,7 +76,12 @@ function eliminarProducto(id) {
     fetch(`https://localsmart.onrender.com/productos/${id}`, {
         method: 'DELETE'
     })
-    .then( respuesta => respuesta.text())
+    .then(respuesta=> {
+        if(!respuesta.ok) {
+            throw new Error('Error al intentar eliminar');
+        }
+        return respuesta.json();
+    })
     .then(() => {
         console.log("Producto eliminado:", id);
         cargarProductos();//Actualizamos la vista después de borrar.
